@@ -7,11 +7,8 @@
 (function() {
     'use strict';
 
-    // ============================================================
-    // CONFIGURAÇÕES - ALTERE AQUI COM SEUS DADOS DO SUPABASE
-    // ============================================================
-    const SUPABASE_URL = 'https://aceizoqhumgkxpfvsbyc.supabase.co';  // ← Substitua pelo seu URL
-    const SUPABASE_ANON_KEY = 'sb_publishable_zCPIyp5lpS4sQqJwESJGOA_Yxfb1RNy';            // ← Substitua pela sua anon key
+    const SUPABASE_URL = 'https://aceizoqhumgkxpfvsbyc.supabase.co';  
+    const SUPABASE_ANON_KEY = 'sb_publishable_zCPIyp5lpS4sQqJwESJGOA_Yxfb1RNy';            
 
     // Verifica se os dados foram configurados
     if (SUPABASE_URL.includes('SEU-PROJETO')) {
