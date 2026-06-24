@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EconoWeb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/geral.css">
+    <link rel="stylesheet" href="css/dash.css">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="supabase.js"></script>
+
+    <!-- Auth unificado -->
+    <script src="js/auth/auth-check.js"></script>
+</head>
+<body>
+
+    <!-- 🧩 Navbar injetado automaticamente pelo navbar.js -->
+
+    <div class="main-layout">
+
+        <aside class="left-sidebar">
+            <div class="menu-card">
+                <a href="dash.html" class="menu-item active">
+                    <div class="menu-icon mi-home"><i class="fas fa-home"></i></div>
+                    <span class="menu-text">Feed Principal</span>
+                </a>
+                <a href="pessoas.html" class="menu-item">
+                    <div class="menu-icon mi-people"><i class="fas fa-user-friends"></i></div>
+                    <span class="menu-text">Pessoas</span>
+                </a>
+                <a href="comunidade.html" class="menu-item">
+                    <div class="menu-icon mi-groups"><i class="fas fa-users-cog"></i></div>
+                    <span class="menu-text">Comunidades</span>
+                </a>
+                <a href="eventos.html" class="menu-item">
+                    <div class="menu-icon mi-events"><i class="fas fa-calendar-alt"></i></div>
+                    <span class="menu-text">Eventos</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-docs"><i class="fas fa-bookmark"></i></div>
+                    <span class="menu-text">Salvos</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-store"><i class="fas fa-calendar-check"></i></div>
+                    <span class="menu-text">Reserva de Salas</span>
+                </a>
+                <a href="http://colheitafeliz.online/" class="menu-item">
+                    <div class="menu-icon mi-store"><i class="fas fa-store"></i></div>
+                    <span class="menu-text">Documentos SQJ</span>
+                </a>
+                <a href="https://forms.office.com/pages/responsepage.aspx?id=4dxszmyXAUmtLNKzf5MFeOU_VoEW2MJCleyBns7E4OdUMTZWVDFVSTdGRkpQVFhSVDI5RklOV09VUS4u&origin=QRCode&qrcodeorigin=presentation&route=shorturl" class="menu-item" target="_blank">
+                    <div class="menu-icon mi-rh"><i class="fas fa-file-alt"></i></div>
+                    <span class="menu-text">Canal de Atendimento</span>
+                </a>
+                <a href="https://meurh.foxconn.com.br/web/app/RH/PortalMeuRH/#/login" class="menu-item" target="_blank">
+                    <div class="menu-icon mi-rh"><i class="fas fa-user-cog"></i></div>
+                    <span class="menu-text">Meu RH</span>
+                </a>
+            </div>
+
+            <div class="menu-card">
+                <div class="menu-section-title">Minhas Comunidades</div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">GL</div>
+                    <div class="community-info">
+                        <div class="community-name">Gerentes de Loja</div>
+                        <div class="community-members">42 membros</div>
+                    </div>
+                    <div class="community-badge"></div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">FR</div>
+                    <div class="community-info">
+                        <div class="community-name">Frente de Caixa</div>
+                        <div class="community-members">128 membros</div>
+                    </div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--accent), #C2410C);">OP</div>
+                    <div class="community-info">
+                        <div class="community-name">Operacoes e Logistica</div>
+                        <div class="community-members">86 membros</div>
+                    </div>
+                    <div class="community-badge"></div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--purple), #6D28D9);">MK</div>
+                    <div class="community-info">
+                        <div class="community-name">Marketing Varejo</div>
+                        <div class="community-members">24 membros</div>
+                    </div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--pink), #BE185D);">RH</div>
+                    <div class="community-info">
+                        <div class="community-name">RH e Bem-Estar</div>
+                        <div class="community-members">156 membros</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="center-feed">
+
+            <div class="create-post">
+                <div class="create-post-input">
+                    <div class="user-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">GM</div>
+                    <input type="text" placeholder="O que voce gostaria de postar, Gabriel?">
+                </div>
+                <div class="create-post-actions">
+                    <div class="post-types">
+                        <button class="post-type-btn pt-photo"><i class="fas fa-image"></i> <span>Foto</span></button>
+                        <button class="post-type-btn pt-video"><i class="fas fa-video"></i> <span>Video</span></button>
+                        <button class="post-type-btn pt-event"><i class="fas fa-calendar-plus"></i> <span>Evento</span></button>
+                        <button class="post-type-btn pt-doc"><i class="fas fa-file-alt"></i> <span>Documento</span></button>
+                    </div>
+                    <button class="btn-publish">Publicar</button>
+                </div>
+            </div>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="post-author-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">RH</div>
+                        <div class="post-author-info">
+                            <div class="post-author-name">
+                                RH Corporativo
+                                <div class="verified-badge"><i class="fas fa-check"></i></div>
+                            </div>
+                            <div class="post-meta">
+                                <span>Comunicado Oficial</span><span>.</span><span>Ha 2 horas</span><span>.</span><i class="fas fa-globe-americas"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="post-options"><i class="fas fa-ellipsis-h"></i></button>
+                </div>
+                <div class="post-content">
+                    <p><strong>Grande Novidade!</strong></p>
+                    <p>Estamos lancando o programa <strong>Economart Saude</strong>, uma iniciativa de bem-estar para todos os colaboradores. A partir de junho, teremos acesso a:</p>
+                    <p>Ginastica laboral nas unidades<br>Parceria com academias (50% de desconto)<br>Acompanhamento nutricional gratuito<br>Sessoes de yoga toda sexta-feira</p>
+                    <p>As inscricoes comecam na proxima segunda-feira. Fiquem ligados!</p>
+                    <p class="post-hashtags">#EconomartSaude #BemEstar #VarejoComVida</p>
+                </div>
+                <div class="post-media" style="height: 320px; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 64px;">
+                    <i class="fas fa-heart-pulse"></i>
+                </div>
+                <div class="post-stats">
+                    <div class="reactions-summary">
+                        <div class="reaction-emoji reaction-like"><i class="fas fa-thumbs-up"></i></div>
+                        <div class="reaction-emoji reaction-love"><i class="fas fa-heart"></i></div>
+                        <div class="reaction-emoji reaction-wow"><i class="fas fa-face-surprise"></i></div>
+                        <span class="reactions-count">234 reacoes</span>
+                    </div>
+                    <div class="comments-share">
+                        <span>45 comentarios</span><span>12 compartilhamentos</span>
+                    </div>
+                </div>
+                <div class="post-actions-bar">
+                    <button class="post-action like-btn" onclick="toggleLike(this)"><i class="far fa-thumbs-up"></i> <span>Curtir</span></button>
+                    <button class="post-action comment-btn" onclick="focusComment(this)"><i class="far fa-comment"></i> <span>Comentar</span></button>
+                    <button class="post-action save-btn" onclick="toggleSave(this)"><i class="far fa-bookmark"></i> <span>Salvar</span></button>
+                </div>
+                <div class="comments-section">
+                    <div class="comment-item">
+                        <div class="comment-avatar" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">JP</div>
+                        <div class="comment-body">
+                            <div class="comment-author">Joao Pereira <span style="color: var(--gray); font-weight: 400;">. Caixa</span></div>
+                            <div class="comment-text">Incrivel iniciativa! Ja estava precisando de algo assim. Vou me inscrever assim que abrir!</div>
+                            <div class="comment-actions">
+                                <span>Curtir</span><span>.</span><span>Responder</span><span>.</span><span>Ha 1 hora</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-item">
+                        <div class="comment-avatar" style="background: linear-gradient(135deg, #DB2777, #BE185D);">AN</div>
+                        <div class="comment-body">
+                            <div class="comment-author">Ana Nunes <span style="color: var(--gray); font-weight: 400;">. Reposicao</span></div>
+                            <div class="comment-text">As sessoes de yoga serao em qual horario? Preciso organizar minha escala!</div>
+                            <div class="comment-actions">
+                                <span>Curtir</span><span>.</span><span>Responder</span><span>.</span><span>Ha 45 minutos</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-input-wrapper">
+                        <div class="user-avatar" style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, var(--secondary), #10B981);">GM</div>
+                        <input type="text" placeholder="Escreva um comentario...">
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="post-author-avatar" style="background: linear-gradient(135deg, var(--accent), #C2410C);">OP</div>
+                        <div class="post-author-info">
+                            <div class="post-author-name">
+                                Documentos SQG
+                                <div class="verified-badge"><i class="fas fa-check"></i></div>
+                            </div>
+                            <div class="post-meta">
+                                <span>Comunicado</span><span>.</span><span>Ha 4 horas</span><span>.</span><i class="fas fa-building"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="post-options"><i class="fas fa-ellipsis-h"></i></button>
+                </div>
+                <div class="post-content">
+                    <p><strong>Atencao, equipe!</strong></p>
+                    <p>Identificamos uma inconsistencia no processo de abertura de loja nas ultimas 3 unidades auditadas. O checklist de <strong>verificacao de equipamentos de frio</strong> nao esta sendo preenchido corretamente.</p>
+                    <p><strong>Acao necessaria:</strong> Todos os gerentes devem revisar o treinamento do modulo de checklists tecnicos ate sexta-feira.</p>
+                    <p>Quem tiver duvidas, pode me chamar no privado ou comentar aqui. Vamos manter nossos padroes!</p>
+                </div>
+                <div class="post-media-grid grid-2">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23FEF3C7' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter' font-size='18' fill='%23D97706'%3EChecklist Tecnico%3C/text%3E%3C/svg%3E" alt="Checklist">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23DBEAFE' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter' font-size='18' fill='%231D4ED8'%3EEquipamentos de Frio%3C/text%3E%3C/svg%3E" alt="Frio">
+                </div>
+                <div class="post-stats">
+                    <div class="reactions-summary">
+                        <div class="reaction-emoji reaction-like"><i class="fas fa-thumbs-up"></i></div>
+                        <div class="reaction-emoji reaction-wow"><i class="fas fa-face-surprise"></i></div>
+                        <span class="reactions-count">89 reacoes</span>
+                    </div>
+                    <div class="comments-share">
+                        <span>23 comentarios</span><span>8 compartilhamentos</span>
+                    </div>
+                </div>
+                <div class="post-actions-bar">
+                    <button class="post-action like-btn" onclick="toggleLike(this)"><i class="far fa-thumbs-up"></i> <span>Curtir</span></button>
+                    <button class="post-action comment-btn" onclick="focusComment(this)"><i class="far fa-comment"></i> <span>Comentar</span></button>
+                    <button class="post-action save-btn" onclick="toggleSave(this)"><i class="far fa-bookmark"></i> <span>Salvar</span></button>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="post-author-avatar" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">JP</div>
+                        <div class="post-author-info">
+                            <div class="post-author-name">Joao Pereira</div>
+                            <div class="post-meta">
+                                <span>Caixa . Loja Centro</span><span>.</span><span>Ha 6 horas</span><span>.</span><i class="fas fa-globe-americas"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="post-options"><i class="fas fa-ellipsis-h"></i></button>
+                </div>
+                <div class="post-content">
+                    <p>Hoje completei <strong>1 ano na Economart</strong>!</p>
+                    <p>Quero agradecer a todos da equipe da Loja Centro pelo apoio e pela energia de todos os dias. Aprendi muito e espero continuar crescendo junto com essa empresa incrivel!</p>
+                    <p>Obrigado, Economart!</p>
+                    <p class="post-hashtags">#AniversarioDeEmpresa #Economart #1Ano #Gratidao</p>
+                </div>
+                <div class="post-media" style="height: 280px; background: linear-gradient(135deg, #FCD34D, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center; color: white; font-size: 80px;">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="post-stats">
+                    <div class="reactions-summary">
+                        <div class="reaction-emoji reaction-love"><i class="fas fa-heart"></i></div>
+                        <div class="reaction-emoji reaction-like"><i class="fas fa-thumbs-up"></i></div>
+                        <div class="reaction-emoji reaction-wow"><i class="fas fa-face-surprise"></i></div>
+                        <span class="reactions-count">156 reacoes</span>
+                    </div>
+                    <div class="comments-share">
+                        <span>32 comentarios</span><span>5 compartilhamentos</span>
+                    </div>
+                </div>
+                <div class="post-actions-bar">
+                    <button class="post-action like-btn" onclick="toggleLike(this)"><i class="far fa-thumbs-up"></i> <span>Curtir</span></button>
+                    <button class="post-action comment-btn" onclick="focusComment(this)"><i class="far fa-comment"></i> <span>Comentar</span></button>
+                    <button class="post-action save-btn" onclick="toggleSave(this)"><i class="far fa-bookmark"></i> <span>Salvar</span></button>
+                </div>
+                <div class="comments-section">
+                    <div class="comment-item">
+                        <div class="comment-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">GM</div>
+                        <div class="comment-body">
+                            <div class="comment-author">Gabriel Matos <span style="color: var(--gray); font-weight: 400;">. Analista Sistemas</span></div>
+                            <div class="comment-text">Parabens, Joao! E um prazer ter voce no time. Que venham muitos anos mais!</div>
+                            <div class="comment-actions">
+                                <span>Curtir</span><span>.</span><span>Responder</span><span>.</span><span>Ha 5 horas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-input-wrapper">
+                        <div class="user-avatar" style="width: 32px; height: 32px; font-size: 12px; background: linear-gradient(135deg, var(--secondary), #10B981);">GM</div>
+                        <input type="text" placeholder="Escreva um comentario...">
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="post-author-avatar" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);">MK</div>
+                        <div class="post-author-info">
+                            <div class="post-author-name">
+                                Marketing Economart
+                                <div class="verified-badge"><i class="fas fa-check"></i></div>
+                            </div>
+                            <div class="post-meta">
+                                <span>Campanha</span><span>.</span><span>Ontem</span><span>.</span><i class="fas fa-globe-americas"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="post-options"><i class="fas fa-ellipsis-h"></i></button>
+                </div>
+                <div class="post-content">
+                    <p><strong>Campanha Dia das Maes esta no ar!</strong></p>
+                    <p>Colaboradores, o material de PDV ja esta disponivel para download na area de Documentos. Temos:</p>
+                    <p>Banners para vitrine<br>Tags de preco especiais<br>Posts para redes sociais das lojas<br>Display de brindes</p>
+                    <p>Prazo de implantacao: ate 08/05. Bora vender!</p>
+                </div>
+                <div class="post-media-grid grid-3">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23FCE7F3' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter' font-size='16' fill='%23DB2777'%3EBanner%3C/text%3E%3C/svg%3E" alt="Banner">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23F3E8FF' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter' font-size='16' fill='%237C3AED'%3ETags%3C/text%3E%3C/svg%3E" alt="Tags">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%23ECFDF5' width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter' font-size='16' fill='%23059669'%3ESocial%3C/text%3E%3C/svg%3E" alt="Social">
+                </div>
+                <div class="post-stats">
+                    <div class="reactions-summary">
+                        <div class="reaction-emoji reaction-like"><i class="fas fa-thumbs-up"></i></div>
+                        <div class="reaction-emoji reaction-love"><i class="fas fa-heart"></i></div>
+                        <span class="reactions-count">67 reacoes</span>
+                    </div>
+                    <div class="comments-share">
+                        <span>14 comentarios</span><span>22 compartilhamentos</span>
+                    </div>
+                </div>
+                <div class="post-actions-bar">
+                    <button class="post-action like-btn" onclick="toggleLike(this)"><i class="far fa-thumbs-up"></i> <span>Curtir</span></button>
+                    <button class="post-action comment-btn" onclick="focusComment(this)"><i class="far fa-comment"></i> <span>Comentar</span></button>
+                    <button class="post-action save-btn" onclick="toggleSave(this)"><i class="far fa-bookmark"></i> <span>Salvar</span></button>
+                </div>
+            </article>
+        </main>
+
+        <aside class="right-sidebar">
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-birthday-cake"></i> Aniversariantes do Dia</div>
+                    <a href="#" class="widget-more">Ver todos</a>
+                </div>
+                <div class="widget-body">
+                    <div class="birthday-item">
+                        <div class="birthday-avatar" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">JP
+                            <div class="birthday-cake"><i class="fas fa-birthday-cake"></i></div>
+                        </div>
+                        <div class="birthday-info">
+                            <div class="birthday-name">Joao Pereira</div>
+                            <div class="birthday-role">Caixa . Loja CTG 1</div>
+                        </div>
+                        <button class="btn-wish">Parabenizar</button>
+                    </div>
+                    <div class="birthday-item">
+                        <div class="birthday-avatar" style="background: linear-gradient(135deg, #DB2777, #BE185D);">AN
+                            <div class="birthday-cake"><i class="fas fa-birthday-cake"></i></div>
+                        </div>
+                        <div class="birthday-info">
+                            <div class="birthday-name">Ana Nunes</div>
+                            <div class="birthday-role">Reposicao . Loja PSG 1</div>
+                        </div>
+                        <button class="btn-wish">Parabenizar</button>
+                    </div>
+                    <div class="birthday-item">
+                        <div class="birthday-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">RL
+                            <div class="birthday-cake"><i class="fas fa-birthday-cake"></i></div>
+                        </div>
+                        <div class="birthday-info">
+                            <div class="birthday-name">Roberto Lima</div>
+                            <div class="birthday-role">Gerente . Loja MAN 1</div>
+                        </div>
+                        <button class="btn-wish">Parabenizar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-fire"></i> Em Alta</div>
+                    <a href="#" class="widget-more">Ver mais</a>
+                </div>
+                <div class="widget-body">
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Comunicado</div>
+                        <div class="trending-title">Programa Economart Saude</div>
+                        <div class="trending-count">234 interacoes . Ha 2 horas</div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Operacoes</div>
+                        <div class="trending-title">Checklist Tecnico - Equipamentos de Frio</div>
+                        <div class="trending-count">89 interacoes . Ha 4 horas</div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Campanha</div>
+                        <div class="trending-title">Dia das Maes - Material de PDV</div>
+                        <div class="trending-count">67 interacoes . Ontem</div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Celebracao</div>
+                        <div class="trending-title">Aniversario de Empresa - Joao Pereira</div>
+                        <div class="trending-count">156 interacoes . Ha 6 horas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-briefcase"></i> Vagas Internas</div>
+                    <a href="#" class="widget-more">Ver todas</a>
+                </div>
+                <div class="widget-body">
+                    <div class="job-item">
+                        <div class="job-title">Gerente de Loja - Loja Oeste</div>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Salvador, BA</span>
+                            <span class="job-tag">Nova</span>
+                        </div>
+                    </div>
+                    <div class="job-item">
+                        <div class="job-title">Analista de Marketing Digital</div>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Matriz</span>
+                            <span class="job-tag">Urgente</span>
+                        </div>
+                    </div>
+                    <div class="job-item">
+                        <div class="job-title">Especialista em Frios</div>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Loja Norte</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-user-plus"></i> Sugestoes para Seguir</div>
+                </div>
+                <div class="widget-body">
+                    <div class="suggestion-item">
+                        <div class="suggestion-avatar" style="background: linear-gradient(135deg, #0D9488, #0F766E);">CL</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">Carlos Lima</div>
+                            <div class="suggestion-role">Analista de TI</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">RL</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">Roberta Lopes</div>
+                            <div class="suggestion-role">Supervisora de Loja</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-avatar" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);">MF</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">Marcos Ferreira</div>
+                            <div class="suggestion-role">Especialista em Frios</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#">Sobre</a> .
+                <a href="#">Privacidade</a> .
+                <a href="#">Termos</a> .
+                <a href="#">Ajuda</a><br>
+                Economart Connect 2026
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Like functionality
+        function toggleLike(btn) {
+            btn.classList.toggle('liked');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('liked')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                btn.style.color = 'var(--primary)';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                btn.style.color = '';
+            }
+        }
+
+        // Focus comment input
+        function focusComment(btn) {
+            const postCard = btn.closest('.post-card');
+            const commentInput = postCard.querySelector('.comment-input-wrapper input');
+            if (commentInput) {
+                commentInput.focus();
+                commentInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Save functionality
+        function toggleSave(btn) {
+            btn.classList.toggle('saved');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('saved')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                btn.style.color = 'var(--accent)';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                btn.style.color = '';
+            }
+        }
+
+        // Add Enter key support for comment inputs
+        document.querySelectorAll('.comment-input-wrapper input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    const commentsSection = this.closest('.comments-section');
+
+                    // Create new comment
+                    const newComment = document.createElement('div');
+                    newComment.className = 'comment-item';
+                    newComment.style.animation = 'fadeInUp 0.3s ease';
+                    newComment.innerHTML = `
+                        <div class="comment-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                        <div class="comment-body">
+                            <div class="comment-author">Gabriel Matos <span style="color: var(--gray); font-weight: 400;">. Você</span></div>
+                            <div class="comment-text">${this.value.trim()}</div>
+                            <div class="comment-actions">
+                                <span>Curtir</span><span>.</span><span>Responder</span><span>.</span><span>Agora</span>
+                            </div>
+                        </div>
+                    `;
+
+                    commentsSection.insertBefore(newComment, this.closest('.comment-input-wrapper'));
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+
+    <!-- Inicialização do usuário na dash -->
+    <script>
+    (function initDashUsuario() {
+        const usuario = obterUsuario();
+
+        if (!usuario) {
+            window.location.replace('login.html');
+            return;
+        }
+
+        // --- Atualiza placeholder do "Criar Post" com nome do usuário ---
+        const createPostInput = document.querySelector('.create-post-input input');
+        if (createPostInput && usuario.nome) {
+            const primeiroNome = usuario.nome.split(' ')[0];
+            createPostInput.placeholder = `O que você gostaria de postar, ${primeiroNome}?`;
+        }
+
+        // --- Atualiza iniciais do avatar no create-post ---
+        const createPostAvatar = document.querySelector('.create-post-input .user-avatar');
+        if (createPostAvatar && usuario.nome) {
+            const iniciais = usuario.nome
+                .split(' ')
+                .slice(0, 2)
+                .map(n => n[0])
+                .join('')
+                .toUpperCase();
+            createPostAvatar.textContent = iniciais || 'EU';
+        }
+
+        // --- Atualiza iniciais nos comentários "Você" ---
+        const commentAvatares = document.querySelectorAll('.comment-input-wrapper .user-avatar');
+        commentAvatares.forEach(avatar => {
+            if (usuario.nome) {
+                const iniciais = usuario.nome
+                    .split(' ')
+                    .slice(0, 2)
+                    .map(n => n[0])
+                    .join('')
+                    .toUpperCase();
+                avatar.textContent = iniciais || 'EU';
+            }
+        });
+
+        // --- Atualiza nome no comentário "Você" ---
+        const commentAuthors = document.querySelectorAll('.comment-author');
+        commentAuthors.forEach(author => {
+            const spanVoce = author.querySelector('span');
+            if (spanVoce && spanVoce.textContent.includes('Você')) {
+                const nomeBase = usuario.nome || 'Você';
+                const cargo = usuario.cargo || '';
+                const setor = usuario.setor || '';
+                const infoExtra = cargo || setor ? ` . ${cargo || setor}` : '';
+                author.innerHTML = `${nomeBase} <span style="color: var(--gray); font-weight: 400;">${infoExtra || ' . Você'}</span>`;
+            }
+        });
+
+        console.log('[EconoWeb] Usuário autenticado:', {
+            id: usuario.id,
+            nome: usuario.nome,
+            username: usuario.username,
+            email: usuario.email,
+            setor: usuario.setor,
+            cargo: usuario.cargo
+        });
+    })();
+    </script>
+
+    <!-- 🧩 Navbar Component -->
+    <script src="/js/nav_side/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidades — EconomConnect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="auth-guard.js"></script>
+    <style>
+        :root {
+            --primary: #1E40AF; --primary-light: #3B82F6; --primary-dark: #1E3A8A;
+            --secondary: #059669; --accent: #EA580C; --danger: #DC2626;
+            --purple: #7C3AED; --pink: #DB2777; --dark: #0F172A; --dark-light: #1E293B;
+            --gray: #64748B; --gray-light: #94A3B8; --gray-lighter: #CBD5E1;
+            --bg: #F8FAFC; --bg-card: #FFFFFF; --bg-hover: #F1F5F9; --border: #E2E8F0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 16px; --radius-sm: 12px; --radius-xs: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--dark); line-height: 1.5; overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--gray-lighter); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gray-light); }
+
+        /* ===== NAVBAR (idêntico ao original) ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+        }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px; font-weight: 800;
+        }
+        .logo-text { font-size: 22px; font-weight: 900; color: var(--dark); letter-spacing: -0.8px; }
+        .logo-text span { color: var(--primary); }
+        .search-box { position: relative; width: 360px; }
+        .search-box input {
+            width: 100%; padding: 10px 16px 10px 42px;
+            border: 1.5px solid var(--border); border-radius: 100px;
+            background: var(--bg); font-size: 14px; font-family: inherit;
+            transition: var(--transition); outline: none;
+        }
+        .search-box input:focus {
+            border-color: var(--primary-light); background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+        }
+        .search-box i {
+            position: absolute; left: 16px; top: 50%;
+            transform: translateY(-50%); color: var(--gray-light); font-size: 14px;
+        }
+        .nav-center { display: flex; align-items: center; gap: 4px; }
+        .nav-tab {
+            display: flex; align-items: center; justify-content: center;
+            width: 110px; height: 48px; border-radius: var(--radius-xs);
+            cursor: pointer; color: var(--gray); font-size: 20px;
+            position: relative; transition: var(--transition); text-decoration: none;
+        }
+        .nav-tab:hover { background: var(--bg-hover); color: var(--primary); }
+        .nav-tab.active { color: var(--primary); }
+        .nav-tab.active::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            transform: translateX(-50%); width: 60px; height: 3px;
+            background: var(--primary); border-radius: 3px;
+        }
+        .nav-tab .badge {
+            position: absolute; top: 6px; right: 24px;
+            width: 18px; height: 18px; background: var(--accent);
+            color: white; font-size: 10px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .nav-btn {
+            width: 40px; height: 40px; border: none; background: var(--bg);
+            border-radius: 50%; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; color: var(--dark);
+            font-size: 18px; position: relative; transition: var(--transition);
+        }
+        .nav-btn:hover { background: var(--bg-hover); }
+        .nav-btn .badge {
+            position: absolute; top: -2px; right: -2px;
+            width: 18px; height: 18px; background: var(--danger);
+            color: white; font-size: 10px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid white;
+        }
+        .user-menu {
+            display: flex; align-items: center; gap: 10px;
+            padding: 4px 4px 4px 12px; border-radius: 100px;
+            cursor: pointer; transition: var(--transition); margin-left: 8px;
+        }
+        .user-menu:hover { background: var(--bg-hover); }
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), #10B981);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 13px;
+        }
+        .user-menu i { color: var(--gray); font-size: 12px; }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main-layout {
+            display: grid; grid-template-columns: 300px 1fr 320px;
+            gap: 24px; max-width: 1400px; margin: 0 auto;
+            padding: 88px 24px 40px;
+        }
+
+        /* ===== LEFT SIDEBAR ===== */
+        .left-sidebar {
+            position: sticky; top: 88px;
+            height: calc(100vh - 104px); overflow-y: auto;
+        }
+        .menu-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px;
+        }
+        .menu-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 20px; cursor: pointer;
+            transition: var(--transition); text-decoration: none; color: inherit;
+        }
+        .menu-item:hover { background: var(--bg-hover); }
+        .menu-item.active {
+            background: linear-gradient(90deg, #EFF6FF, transparent);
+            border-left: 3px solid var(--primary);
+        }
+        .menu-item.active .menu-icon { color: var(--primary); }
+        .menu-item.active .menu-text { color: var(--primary); font-weight: 600; }
+        .menu-icon {
+            width: 36px; height: 36px; border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: var(--gray); transition: var(--transition);
+        }
+        .menu-item:hover .menu-icon { transform: scale(1.1); }
+        .mi-home { background: #EFF6FF; color: var(--primary); }
+        .mi-people { background: #ECFDF5; color: var(--secondary); }
+        .mi-groups { background: #F3E8FF; color: var(--purple); }
+        .mi-events { background: #FFF7ED; color: var(--accent); }
+        .mi-docs { background: #FEF2F2; color: var(--danger); }
+        .mi-store { background: #F0FDFA; color: #0D9488; }
+        .mi-ti { background: #EFF6FF; color: var(--primary-light); }
+        .mi-rh { background: #FDF2F8; color: var(--pink); }
+        .menu-text { font-size: 15px; font-weight: 500; color: var(--dark-light); }
+        .menu-divider { height: 1px; background: var(--border); margin: 8px 20px; }
+        .menu-section-title {
+            padding: 16px 20px 8px; font-size: 13px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-light);
+        }
+        .community-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 20px; cursor: pointer; transition: var(--transition);
+        }
+        .community-item:hover { background: var(--bg-hover); }
+        .community-avatar {
+            width: 32px; height: 32px; border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: white; font-weight: 700; flex-shrink: 0;
+        }
+        .community-info { flex: 1; min-width: 0; }
+        .community-name {
+            font-size: 14px; font-weight: 600; color: var(--dark);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .community-members { font-size: 12px; color: var(--gray-light); }
+        .community-badge {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--secondary); flex-shrink: 0;
+        }
+
+        /* ===== CENTER CONTENT ===== */
+        .center-feed { max-width: 680px; margin: 0 auto; width: 100%; }
+
+        .page-header {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 20px;
+        }
+        .page-header h1 {
+            font-size: 24px; font-weight: 800; color: var(--dark); margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+        .page-header p {
+            font-size: 14px; color: var(--gray); line-height: 1.5;
+        }
+
+        .tabs-row {
+            display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .tab-pill {
+            padding: 8px 20px; border-radius: 100px;
+            border: 1.5px solid var(--border); background: var(--bg-card);
+            font-family: inherit; font-size: 14px; font-weight: 600;
+            color: var(--gray); cursor: pointer; transition: var(--transition);
+        }
+        .tab-pill:hover {
+            background: var(--bg-hover); color: var(--primary);
+            border-color: var(--primary-light);
+        }
+        .tab-pill.active {
+            background: var(--primary); color: white;
+            border-color: var(--primary);
+        }
+
+        /* ===== COMMUNITY CARDS ===== */
+        .communities-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .community-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden;
+            transition: var(--transition); cursor: pointer;
+        }
+        .community-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .community-cover {
+            height: 100px; background-size: cover; background-position: center;
+            position: relative;
+        }
+        .community-cover::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.3));
+        }
+        .community-avatar-wrap {
+            position: relative; padding: 0 16px;
+            margin-top: -28px; display: flex;
+            justify-content: space-between; align-items: flex-end;
+        }
+        .community-card-avatar {
+            width: 56px; height: 56px; border-radius: var(--radius-xs);
+            border: 3px solid var(--bg-card); object-fit: cover;
+            box-shadow: var(--shadow-sm);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 18px; flex-shrink: 0;
+        }
+        .community-type-badge {
+            padding: 4px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .type-public { background: #ECFDF5; color: var(--secondary); }
+        .type-private { background: #FFF7ED; color: var(--accent); }
+        .type-dept { background: #EFF6FF; color: var(--primary); }
+        .community-body { padding: 12px 16px 16px; }
+        .community-card-name {
+            font-size: 15px; font-weight: 700; color: var(--dark);
+            margin-bottom: 4px;
+        }
+        .community-card-desc {
+            font-size: 13px; color: var(--gray); line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .community-stats {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 14px;
+        }
+        .stat {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 12px; color: var(--gray-light);
+        }
+        .stat i { font-size: 12px; }
+        .member-stack {
+            display: flex; margin-left: auto;
+        }
+        .member-stack img, .member-count {
+            width: 24px; height: 24px; border-radius: 50%;
+            border: 2px solid var(--bg-card); margin-left: -8px;
+            object-fit: cover;
+        }
+        .member-stack img:first-child { margin-left: 0; }
+        .member-count {
+            background: var(--bg-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 700; color: var(--gray);
+        }
+        .community-footer { display: flex; gap: 8px; }
+        .btn {
+            flex: 1; padding: 8px 14px; border-radius: var(--radius-xs);
+            font-family: inherit; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: var(--transition); border: none;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-primary {
+            background: var(--primary); color: white;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline {
+            background: transparent; color: var(--primary);
+            border: 1.5px solid var(--border);
+        }
+        .btn-outline:hover {
+            background: var(--bg-hover); border-color: var(--primary-light);
+        }
+        .btn-joined {
+            background: var(--bg-hover); color: var(--gray);
+            border: 1.5px solid var(--border);
+        }
+        .btn-joined:hover {
+            background: #FEF2F2; color: var(--danger); border-color: #FECACA;
+        }
+        .btn-locked {
+            background: transparent; color: var(--gray);
+            border: 1.5px solid var(--border);
+        }
+        .btn-locked:hover {
+            background: var(--bg-hover); color: var(--accent); border-color: var(--accent);
+        }
+
+        /* ===== RIGHT SIDEBAR ===== */
+        .right-sidebar {
+            position: sticky; top: 88px;
+            height: calc(100vh - 104px); overflow-y: auto;
+        }
+        .widget {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden;
+        }
+        .widget-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+        }
+        .widget-title {
+            font-size: 15px; font-weight: 700; color: var(--dark);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .widget-title i { color: var(--primary); font-size: 14px; }
+        .widget-more {
+            font-size: 13px; color: var(--primary); font-weight: 600;
+            cursor: pointer; text-decoration: none;
+        }
+        .widget-more:hover { text-decoration: underline; }
+        .widget-body { padding: 12px 0; }
+
+        .suggested-community {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 20px; transition: var(--transition);
+        }
+        .suggested-community:hover { background: var(--bg-hover); }
+        .suggested-avatar {
+            width: 40px; height: 40px; border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 14px; flex-shrink: 0;
+        }
+        .suggested-info { flex: 1; min-width: 0; }
+        .suggested-name {
+            font-size: 14px; font-weight: 600; color: var(--dark);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .suggested-meta { font-size: 12px; color: var(--gray-light); }
+        .btn-follow {
+            padding: 6px 16px; background: transparent; color: var(--primary);
+            border: 1.5px solid var(--primary); border-radius: 100px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            transition: var(--transition); font-family: inherit;
+            white-space: nowrap;
+        }
+        .btn-follow:hover { background: var(--primary); color: white; }
+
+        .trending-item {
+            padding: 12px 20px; cursor: pointer; transition: var(--transition);
+        }
+        .trending-item:hover { background: var(--bg-hover); }
+        .trending-category {
+            font-size: 12px; color: var(--gray);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .trending-category i { font-size: 10px; color: var(--secondary); }
+        .trending-title { font-size: 14px; font-weight: 700; color: var(--dark); margin: 4px 0; }
+        .trending-count { font-size: 12px; color: var(--gray-light); }
+
+        .activity-item {
+            padding: 10px 20px; cursor: pointer; transition: var(--transition);
+        }
+        .activity-item:hover { background: var(--bg-hover); }
+        .activity-text {
+            font-size: 13px; color: var(--dark-light); line-height: 1.5;
+        }
+        .activity-text strong { color: var(--dark); }
+        .activity-time {
+            font-size: 12px; color: var(--gray-light); margin-top: 2px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px; font-size: 12px;
+            color: var(--gray-light); line-height: 1.8;
+        }
+        .sidebar-footer a { color: var(--gray-light); text-decoration: none; }
+        .sidebar-footer a:hover { text-decoration: underline; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .main-layout { grid-template-columns: 260px 1fr; }
+            .right-sidebar { display: none; }
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; padding-top: 80px; }
+            .left-sidebar { display: none; }
+            .search-box { width: 200px; }
+            .nav-center { display: none; }
+        }
+        @media (max-width: 600px) {
+            .navbar { padding: 0 12px; }
+            .logo-text { display: none; }
+            .search-box { display: none; }
+            .communities-grid { grid-template-columns: 1fr; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .community-card { animation: fadeInUp 0.5s ease forwards; }
+        .community-card:nth-child(1) { animation-delay: 0.05s; }
+        .community-card:nth-child(2) { animation-delay: 0.1s; }
+        .community-card:nth-child(3) { animation-delay: 0.15s; }
+        .community-card:nth-child(4) { animation-delay: 0.2s; }
+        .community-card:nth-child(5) { animation-delay: 0.25s; }
+        .community-card:nth-child(6) { animation-delay: 0.3s; }
+        .community-card:nth-child(7) { animation-delay: 0.35s; }
+        .community-card:nth-child(8) { animation-delay: 0.4s; }
+        .community-card:nth-child(9) { animation-delay: 0.45s; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="fas fa-network-wired"></i></div>
+                <div class="logo-text">Econom<span>Connect</span></div>
+            </a>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar comunidades, pessoas, posts...">
+            </div>
+        </div>
+                <div class="nav-center">
+            <a href="dash.html" class="nav-tab" title="Feed Principal"><i class="fas fa-home"></i></a>
+            <a href="comunidade.html" class="nav-tab active" title="Comunidades"><i class="fas fa-users"></i></a>
+            <a href="msm.html" class="nav-tab" title="Mensagens"><i class="fas fa-comment-dots"></i><span class="badge">3</span></a>
+            <a href="gaming.html" class="nav-tab" title="Gamificacao"><i class="fas fa-trophy"></i></a>
+            <a href="eventos.html" class="nav-tab" title="Eventos"><i class="fas fa-calendar-star"></i></a>
+        </div>
+        <div class="nav-right">
+            <button class="nav-btn" title="Criar"><i class="fas fa-plus"></i></button>
+            <a href="msm.html" style="text-decoration:none;"><<button class="nav-btn" title="Mensagens"><i class="fas fa-comment-dots"></i></a><span class="badge">3</span></button>
+            <button class="nav-btn" title="Notificacoes"><i class="fas fa-bell"></i><span class="badge">5</span></button>
+            <div class="user-menu">
+                <div class="user-avatar">MS</div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-layout">
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="left-sidebar">
+            <div class="menu-card">
+                <a href="dash.html" class="menu-item">
+                    <div class="menu-icon mi-home"><i class="fas fa-home"></i></div>
+                    <span class="menu-text">Feed Principal</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-people"><i class="fas fa-user-friends"></i></div>
+                    <span class="menu-text">Pessoas</span>
+                </a>
+                <a href="comunidade.html" class="menu-item active">
+                    <div class="menu-icon mi-groups"><i class="fas fa-users-cog"></i></div>
+                    <span class="menu-text">Comunidades</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-events"><i class="fas fa-calendar-alt"></i></div>
+                    <span class="menu-text">Eventos</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-docs"><i class="fas fa-bookmark"></i></div>
+                    <span class="menu-text">Salvos</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-store"><i class="fas fa-store"></i></div>
+                    <span class="menu-text">Operacoes de Loja</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-ti"><i class="fas fa-laptop-code"></i></div>
+                    <span class="menu-text">Tecnologia</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="menu-icon mi-rh"><i class="fas fa-heart"></i></div>
+                    <span class="menu-text">Recursos Humanos</span>
+                </a>
+            </div>
+
+            <div class="menu-card">
+                <div class="menu-section-title">Minhas Comunidades</div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">TI</div>
+                    <div class="community-info">
+                        <div class="community-name">Tecnologia da Informacao</div>
+                        <div class="community-members">142 membros</div>
+                    </div>
+                    <div class="community-badge"></div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">FR</div>
+                    <div class="community-info">
+                        <div class="community-name">Frente de Caixa</div>
+                        <div class="community-members">128 membros</div>
+                    </div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--accent), #C2410C);">OP</div>
+                    <div class="community-info">
+                        <div class="community-name">Operacoes e Logistica</div>
+                        <div class="community-members">86 membros</div>
+                    </div>
+                    <div class="community-badge"></div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--purple), #6D28D9);">MK</div>
+                    <div class="community-info">
+                        <div class="community-name">Marketing Varejo</div>
+                        <div class="community-members">24 membros</div>
+                    </div>
+                </div>
+                <div class="community-item">
+                    <div class="community-avatar" style="background: linear-gradient(135deg, var(--pink), #BE185D);">RH</div>
+                    <div class="community-info">
+                        <div class="community-name">RH e Bem-Estar</div>
+                        <div class="community-members">156 membros</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER CONTENT -->
+        <main class="center-feed">
+            <div class="page-header">
+                <h1>Comunidades</h1>
+                <p>Conecte-se com colegas, compartilhe conhecimento e faca parte dos grupos que mais combinam com voce.</p>
+            </div>
+
+            <div class="tabs-row">
+                <button class="tab-pill active">Todas</button>
+                <button class="tab-pill">Departamentos</button>
+                <button class="tab-pill">Interesses</button>
+                <button class="tab-pill">Aprendizado</button>
+                <button class="tab-pill">Bem-estar</button>
+                <button class="tab-pill">Mais Ativas</button>
+            </div>
+
+            <div class="communities-grid">
+                <!-- Card 1 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">TI</div>
+                        <span class="community-type-badge type-dept">Departamento</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Tecnologia da Informacao</div>
+                        <div class="community-card-desc">Espaco para troca de conhecimentos sobre sistemas, infraestrutura, seguranca e inovacao tecnologica na Economart.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 142 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 28 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">JP</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#DB2777,#BE185D);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">AN</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">CL</div>
+                                <div class="member-count" style="margin-left:-8px;">+139</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-joined"><i class="fas fa-check"></i> Membro</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #EA580C, #C2410C);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, var(--accent), #C2410C);">VR</div>
+                        <span class="community-type-badge type-dept">Departamento</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Operacoes de Varejo</div>
+                        <div class="community-card-desc">Discussoes sobre gestao de lojas, atendimento ao cliente, merchandising e operacoes do dia a dia.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 89 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 15 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#7C3AED,#6D28D9);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">RL</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#F59E0B,#D97706);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">MF</div>
+                                <div class="member-count" style="margin-left:-8px;">+87</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Participar</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, var(--purple), #6D28D9);">DV</div>
+                        <span class="community-type-badge type-public">Publica</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">DevEconomart</div>
+                        <div class="community-card-desc">Comunidade de desenvolvedores para compartilhar codigo, frameworks, boas praticas e projetos internos.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 56 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 42 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#0D9488,#0F766E);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">MF</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">JP</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">AN</div>
+                                <div class="member-count" style="margin-left:-8px;">+53</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-joined"><i class="fas fa-check"></i> Membro</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #059669, #047857);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">FT</div>
+                        <span class="community-type-badge type-public">Publica</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Economart Fit</div>
+                        <div class="community-card-desc">Grupo de corrida, caminhada e atividades fisicas. Participe dos desafios semanais e conquiste medalhas!</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 203 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 35 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#F59E0B,#D97706);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">RL</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#DB2777,#BE185D);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">AN</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#7C3AED,#6D28D9);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">RL</div>
+                                <div class="member-count" style="margin-left:-8px;">+200</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Participar</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #DB2777, #BE185D);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, var(--pink), #BE185D);">RH</div>
+                        <span class="community-type-badge type-dept">Departamento</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Recursos Humanos</div>
+                        <div class="community-card-desc">Comunicados oficiais de RH, beneficios, politicas internas, eventos e oportunidades de carreira.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 312 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 8 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">JP</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">CL</div>
+                                <div class="member-count" style="margin-left:-8px;">+310</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-joined"><i class="fas fa-check"></i> Membro</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #0D9488, #0F766E);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, #0D9488, #0F766E);">FN</div>
+                        <span class="community-type-badge type-private">Privada</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Financas & Controladoria</div>
+                        <div class="community-card-desc">Discussoes sobre relatorios financeiros, orcamento, compliance e analises de mercado. Acesso restrito.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 34 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 12 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#F59E0B,#D97706);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">RL</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#7C3AED,#6D28D9);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">MF</div>
+                                <div class="member-count" style="margin-left:-8px;">+32</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-locked"><i class="fas fa-lock"></i> Solicitar</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">UX</div>
+                        <span class="community-type-badge type-public">Publica</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">UX & Design System</div>
+                        <div class="community-card-desc">Designers, pesquisadores e desenvolvedores front-end discutem experiencia do usuario e identidade visual.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 41 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 19 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#DB2777,#BE185D);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">AN</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#0D9488,#0F766E);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">CL</div>
+                                <div class="member-count" style="margin-left:-8px;">+39</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Participar</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #1E293B, #0F172A);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, #1E293B, #0F172A);">LD</div>
+                        <span class="community-type-badge type-private">Privada</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Lideres Economart</div>
+                        <div class="community-card-desc">Forum exclusivo para gestores e lideres discutirem estrategia, gestao de equipes e desenvolvimento de talentos.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 28 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 6 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">CL</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">JP</div>
+                                <div class="member-count" style="margin-left:-8px;">+26</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-locked"><i class="fas fa-lock"></i> Solicitar</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 9 -->
+                <div class="community-card">
+                    <div class="community-cover" style="background: linear-gradient(135deg, #F59E0B, #D97706);"></div>
+                    <div class="community-avatar-wrap">
+                        <div class="community-card-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">CI</div>
+                        <span class="community-type-badge type-public">Publica</span>
+                    </div>
+                    <div class="community-body">
+                        <div class="community-card-name">Cafe com Ideias</div>
+                        <div class="community-card-desc">Um espaco descontraido para brainstorms, inovacao e discussoes criativas sobre o futuro do varejo.</div>
+                        <div class="community-stats">
+                            <div class="stat"><i class="fas fa-users"></i> 167 membros</div>
+                            <div class="stat"><i class="fas fa-comment"></i> 55 posts/semana</div>
+                            <div class="member-stack">
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);background:linear-gradient(135deg,#7C3AED,#6D28D9);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">RL</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#DB2777,#BE185D);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">AN</div>
+                                <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--bg-card);margin-left:-8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">JP</div>
+                                <div class="member-count" style="margin-left:-8px;">+164</div>
+                            </div>
+                        </div>
+                        <div class="community-footer">
+                            <button class="btn btn-primary"><i class="fas fa-plus"></i> Participar</button>
+                            <button class="btn btn-outline"><i class="fas fa-eye"></i> Ver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="right-sidebar">
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-lightbulb"></i> Sugestoes para Voce</div>
+                    <a href="#" class="widget-more">Ver mais</a>
+                </div>
+                <div class="widget-body">
+                    <div class="suggested-community">
+                        <div class="suggested-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">ES</div>
+                        <div class="suggested-info">
+                            <div class="suggested-name">Sustentabilidade</div>
+                            <div class="suggested-meta">78 membros · 12 posts/semana</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                    <div class="suggested-community">
+                        <div class="suggested-avatar" style="background: linear-gradient(135deg, var(--purple), #6D28D9);">DS</div>
+                        <div class="suggested-info">
+                            <div class="suggested-name">Data Science</div>
+                            <div class="suggested-meta">45 membros · 22 posts/semana</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                    <div class="suggested-community">
+                        <div class="suggested-avatar" style="background: linear-gradient(135deg, var(--primary-light), #60A5FA);">ON</div>
+                        <div class="suggested-info">
+                            <div class="suggested-name">Onboarding</div>
+                            <div class="suggested-meta">210 membros · 5 posts/semana</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                    <div class="suggested-community">
+                        <div class="suggested-avatar" style="background: linear-gradient(135deg, var(--accent), #C2410C);">MD</div>
+                        <div class="suggested-info">
+                            <div class="suggested-name">Marketing Digital</div>
+                            <div class="suggested-meta">63 membros · 18 posts/semana</div>
+                        </div>
+                        <button class="btn-follow">Seguir</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-fire"></i> Em Alta nas Comunidades</div>
+                    <a href="#" class="widget-more">Ver mais</a>
+                </div>
+                <div class="widget-body">
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Tecnologia</div>
+                        <div class="trending-title">Novo PDV mobile</div>
+                        <div class="trending-count">34 interacoes · Ha 2 horas</div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Varejo</div>
+                        <div class="trending-title">Black Friday 2026</div>
+                        <div class="trending-count">28 interacoes · Ha 4 horas</div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> RH</div>
+                        <div class="trending-title">Programa de Mentoria</div>
+                        <div class="trending-count">21 interacoes · Ha 6 horas</div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-category"><i class="fas fa-arrow-trend-up"></i> Design</div>
+                        <div class="trending-title">Design System v3.0</div>
+                        <div class="trending-count">19 interacoes · Ontem</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-bolt"></i> Atividade Recente</div>
+                </div>
+                <div class="widget-body">
+                    <div class="activity-item">
+                        <div class="activity-text"><strong>Lucas Silva</strong> entrou em <strong>Tecnologia da Informacao</strong></div>
+                        <div class="activity-time">ha 5 minutos</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-text"><strong>Mariana Costa</strong> postou em <strong>DevEconomart</strong></div>
+                        <div class="activity-time">ha 12 minutos</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-text">Nova comunidade criada: <strong>ESG Economart</strong></div>
+                        <div class="activity-time">ha 1 hora</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-text"><strong>Roberto Lima</strong> tornou-se moderador de <strong>Operacoes de Varejo</strong></div>
+                        <div class="activity-time">ha 2 horas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#">Sobre</a> .
+                <a href="#">Privacidade</a> .
+                <a href="#">Termos</a> .
+                <a href="#">Ajuda</a><br>
+                EconomConnect 2026
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Tab pills interactivity
+        document.querySelectorAll('.tab-pill').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab-pill').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Follow buttons
+        document.querySelectorAll('.btn-follow').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (this.textContent === 'Seguir') {
+                    this.textContent = 'Seguindo';
+                    this.style.background = 'var(--primary)';
+                    this.style.color = 'white';
+                } else {
+                    this.textContent = 'Seguir';
+                    this.style.background = 'transparent';
+                    this.style.color = 'var(--primary)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

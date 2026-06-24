@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos - Economart Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS Geral (DEVE vir ANTES dos scripts que injetam componentes) -->
+    <link rel="stylesheet" href="css/geral.css">
+    <!-- CSS Específico da Tela de Eventos -->
+    <link rel="stylesheet" href="css/eventos.css">
+
+    <!-- ============================================================
+         SUPABASE AUTH INTEGRATION
+         ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="/js/supabase.js"></script>
+    <script src="/js/auth/auth.js"></script>
+
+    <!-- ============================================================
+         AUTH CHECK - Verificação centralizada de sessão
+         Usado por navbar.js e sidebar.js em todas as páginas
+         ============================================================ -->
+    <script src="js/auth/auth-check.js"></script>
+
+</head>
+<body>
+
+    <!-- Navbar injetado automaticamente pelo navbar.js -->
+
+    <div class="main-layout">
+
+        <!-- LEFT SIDEBAR: será injetado automaticamente pelo sidebar.js -->
+        <!-- NÃO colocar conteúdo hardcoded aqui! -->
+
+        <!-- CENTER CONTENT -->
+        <main class="center-feed">
+            <div class="page-header">
+                <h1>Calendario de <span>Eventos</span></h1>
+                <p>Explore treinamentos, comemoracoes, reunioes e atividades. Clique em um dia para ver os detalhes.</p>
+                <div class="page-actions-row">
+                    <button class="btn-action btn-primary"><i class="fas fa-plus"></i> Criar Evento</button>
+                    <button class="btn-action btn-secondary"><i class="fas fa-filter"></i> Filtrar</button>
+                </div>
+            </div>
+
+            <!-- CALENDAR -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <div class="calendar-title">
+                        <i class="fas fa-calendar-alt" style="color: var(--primary);"></i>
+                        <span id="calendarMonthYear">Junho 2026</span>
+                    </div>
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <button class="calendar-nav-btn" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Gerado via JS -->
+                </div>
+            </div>
+
+            <!-- EVENT DETAIL PANEL (dinamico) -->
+            <div class="event-detail-panel" id="eventDetailPanel">
+                <div class="event-detail-header">
+                    <div class="event-detail-title" id="detailTitle">Titulo do Evento</div>
+                    <button class="event-detail-close" onclick="closeEventDetail()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="event-detail-meta" id="detailMeta"></div>
+                <div class="event-detail-desc" id="detailDesc"></div>
+                <div class="event-detail-actions" id="detailActions"></div>
+            </div>
+
+            <!-- UPCOMING EVENTS LIST -->
+            <div class="upcoming-section">
+                <div class="upcoming-header">
+                    <h2><i class="fas fa-list-ul"></i> Proximos Eventos</h2>
+                    <a href="#" class="upcoming-more">Ver todos</a>
+                </div>
+
+                <div class="upcoming-event" onclick="showEventDetail(15)">
+                    <div class="upcoming-date" style="background: #EFF6FF;">
+                        <span class="upcoming-day" style="color: var(--primary);">15</span>
+                        <span class="upcoming-month" style="color: var(--primary-light);">JUN</span>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Treinamento de Lideranca e Gestao de Equipes</div>
+                        <div class="upcoming-meta">
+                            <span><i class="fas fa-clock"></i> 09:00 - 17:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Sala 302 - Matriz</span>
+                            <span><i class="fas fa-users"></i> 24 inscritos</span>
+                        </div>
+                        <div class="upcoming-tags">
+                            <span class="upcoming-tag tag-training">Treinamento</span>
+                            <span class="upcoming-tag tag-meeting">Obrigatorio</span>
+                        </div>
+                    </div>
+                    <div class="upcoming-actions">
+                        <button class="btn-small btn-small-joined"><i class="fas fa-check"></i> Inscrito</button>
+                        <button class="btn-small btn-small-outline">Detalhes</button>
+                    </div>
+                </div>
+
+                <div class="upcoming-event" onclick="showEventDetail(16)">
+                    <div class="upcoming-date" style="background: #FDF2F8;">
+                        <span class="upcoming-day" style="color: var(--pink);">16</span>
+                        <span class="upcoming-month" style="color: #BE185D;">JUN</span>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Happy Hour Economart - Comemoracao de 15 Anos</div>
+                        <div class="upcoming-meta">
+                            <span><i class="fas fa-clock"></i> 18:00 - 22:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Espaco Gourmet - Matriz</span>
+                            <span><i class="fas fa-users"></i> 156 inscritos</span>
+                        </div>
+                        <div class="upcoming-tags">
+                            <span class="upcoming-tag tag-social">Social</span>
+                            <span class="upcoming-tag tag-commemoration">Comemoracao</span>
+                        </div>
+                    </div>
+                    <div class="upcoming-actions">
+                        <button class="btn-small btn-small-primary"><i class="fas fa-plus"></i> Participar</button>
+                        <button class="btn-small btn-small-outline">Detalhes</button>
+                    </div>
+                </div>
+
+                <div class="upcoming-event" onclick="showEventDetail(19)">
+                    <div class="upcoming-date" style="background: #FFF7ED;">
+                        <span class="upcoming-day" style="color: var(--accent);">19</span>
+                        <span class="upcoming-month" style="color: #C2410C;">JUN</span>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Workshop: Novo Sistema de Gestao de Estoque</div>
+                        <div class="upcoming-meta">
+                            <span><i class="fas fa-clock"></i> 14:00 - 16:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Auditorio - Matriz</span>
+                            <span><i class="fas fa-users"></i> 42 inscritos</span>
+                        </div>
+                        <div class="upcoming-tags">
+                            <span class="upcoming-tag tag-training">Treinamento</span>
+                            <span class="upcoming-tag tag-meeting">TI</span>
+                        </div>
+                    </div>
+                    <div class="upcoming-actions">
+                        <button class="btn-small btn-small-primary"><i class="fas fa-plus"></i> Participar</button>
+                        <button class="btn-small btn-small-outline">Detalhes</button>
+                    </div>
+                </div>
+
+                <div class="upcoming-event" onclick="showEventDetail(22)">
+                    <div class="upcoming-date" style="background: #ECFDF5;">
+                        <span class="upcoming-day" style="color: var(--secondary);">22</span>
+                        <span class="upcoming-month" style="color: #10B981;">JUN</span>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Dia do Desafio Fitness - Corrida de 5km</div>
+                        <div class="upcoming-meta">
+                            <span><i class="fas fa-clock"></i> 07:00 - 10:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Parque Central</span>
+                            <span><i class="fas fa-users"></i> 89 inscritos</span>
+                        </div>
+                        <div class="upcoming-tags">
+                            <span class="upcoming-tag tag-wellness">Bem-estar</span>
+                            <span class="upcoming-tag tag-social">Social</span>
+                        </div>
+                    </div>
+                    <div class="upcoming-actions">
+                        <button class="btn-small btn-small-joined"><i class="fas fa-check"></i> Inscrito</button>
+                        <button class="btn-small btn-small-outline">Detalhes</button>
+                    </div>
+                </div>
+
+                <div class="upcoming-event" onclick="showEventDetail(29)">
+                    <div class="upcoming-date" style="background: #F3E8FF;">
+                        <span class="upcoming-day" style="color: var(--purple);">29</span>
+                        <span class="upcoming-month" style="color: #6D28D9;">JUN</span>
+                    </div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-title">Dia dos Pais - Homenagem aos Colaboradores</div>
+                        <div class="upcoming-meta">
+                            <span><i class="fas fa-clock"></i> 11:00 - 13:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Refeitorio - Matriz</span>
+                            <span><i class="fas fa-users"></i> 203 inscritos</span>
+                        </div>
+                        <div class="upcoming-tags">
+                            <span class="upcoming-tag tag-social">Social</span>
+                            <span class="upcoming-tag tag-commemoration">Comemoracao</span>
+                        </div>
+                    </div>
+                    <div class="upcoming-actions">
+                        <button class="btn-small btn-small-primary"><i class="fas fa-plus"></i> Participar</button>
+                        <button class="btn-small btn-small-outline">Detalhes</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="right-sidebar">
+            <!-- ===== MINHAS INSCRICOES ===== -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-calendar-check"></i> Minhas Inscricoes</div>
+                    <span class="contador" id="contadorInscricoes" style="width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">2</span>
+                </div>
+                <div class="widget-body" id="minhasInscricoesContainer">
+                    <!-- Renderizado via inscricoes_eventos.js -->
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-calendar-check"></i> Hoje</div>
+                    <span style="font-size: 13px; color: var(--gray-light);">18 de Junho</span>
+                </div>
+                <div class="widget-body">
+                    <div class="mini-event">
+                        <div class="mini-date" style="background: #ECFDF5;">
+                            <span class="mini-day" style="color: var(--secondary);">18</span>
+                            <span class="mini-month" style="color: #10B981;">JUN</span>
+                        </div>
+                        <div class="mini-info">
+                            <div class="mini-title">Sessao de Yoga</div>
+                            <div class="mini-meta">Sala de Bem-estar - Matriz</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-bell"></i> Lembretes</div>
+                </div>
+                <div class="widget-body" style="padding: 16px 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></div>
+                        <span style="font-size: 13px; color: var(--dark-light);">Treinamento de Lideranca amanha as 09:00</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--pink); flex-shrink: 0;"></div>
+                        <span style="font-size: 13px; color: var(--dark-light);">Happy Hour 15 Anos - sexta 18:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#" target="_blank">Sobre</a> .
+                <a href="#" target="_blank">Privacidade</a> .
+                <a href="#" target="_blank">Termos</a> .
+                <a href="#" target="_blank">Ajuda</a><br>
+                Economart Connect 2026
+            </div>
+        </aside>
+    </div>
+
+    <script>
+
+        // ===== CALENDARIO REAL 2026 =====
+        var meses = ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+        var diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+        var currentYear = 2026;
+        var currentMonth = 5; // Junho (0-indexed) - hoje eh 18/06/2026
+
+        // Eventos por data (chave: "YYYY-MM-DD")
+        var eventosPorData = {
+            "2026-06-06": [{ titulo: "Reuniao Gerentes", tipo: "meeting" }],
+            "2026-06-08": [{ titulo: "Onboarding", tipo: "training" }],
+            "2026-06-13": [{ titulo: "Yoga", tipo: "wellness" }],
+            "2026-06-14": [{ titulo: "Happy Hour", tipo: "social" }],
+            "2026-06-15": [{ titulo: "Lideranca", tipo: "training" }, { titulo: "Q3", tipo: "meeting" }],
+            "2026-06-19": [{ titulo: "Sistema Estoque", tipo: "training" }],
+            "2026-06-22": [{ titulo: "Fitness 5km", tipo: "wellness" }, { titulo: "Aniversario", tipo: "commemoration" }],
+            "2026-06-26": [{ titulo: "Diretoria", tipo: "meeting" }],
+            "2026-06-29": [{ titulo: "Dia dos Pais", tipo: "social" }, { titulo: "15 Anos", tipo: "commemoration" }],
+            // Julho
+            "2026-07-03": [{ titulo: "Festa Junina", tipo: "social" }],
+            "2026-07-10": [{ titulo: "Treinamento TI", tipo: "training" }],
+            "2026-07-15": [{ titulo: "Reuniao Geral", tipo: "meeting" }],
+            "2026-07-20": [{ titulo: "Pilates", tipo: "wellness" }],
+            "2026-07-25": [{ titulo: "Confraternizacao", tipo: "social" }],
+            // Agosto
+            "2026-08-05": [{ titulo: "Workshop Vendas", tipo: "training" }],
+            "2026-08-12": [{ titulo: "Dia do Estagiario", tipo: "commemoration" }],
+            "2026-08-18": [{ titulo: "Reuniao Diretoria", tipo: "meeting" }],
+            "2026-08-22": [{ titulo: "Caminhada 3km", tipo: "wellness" }],
+            "2026-08-30": [{ titulo: "Festa do Dia do Comerciario", tipo: "social" }],
+            // Setembro
+            "2026-09-07": [{ titulo: "Independencia - Fechado", tipo: "commemoration" }],
+            "2026-09-15": [{ titulo: "Treinamento Seguranca", tipo: "training" }],
+            "2026-09-20": [{ titulo: "Yoga ao Ar Livre", tipo: "wellness" }],
+            "2026-09-25": [{ titulo: "Reuniao de Lojas", tipo: "meeting" }],
+            // Outubro
+            "2026-10-12": [{ titulo: "Nossa Senhora - Feriado", tipo: "commemoration" }],
+            "2026-10-15": [{ titulo: "Dia do Professor", tipo: "commemoration" }],
+            "2026-10-20": [{ titulo: "Workshop Excel", tipo: "training" }],
+            "2026-10-28": [{ titulo: "Halloween Party", tipo: "social" }],
+            // Novembro
+            "2026-11-02": [{ titulo: "Finados - Fechado", tipo: "commemoration" }],
+            "2026-11-15": [{ titulo: "Proclamacao - Feriado", tipo: "commemoration" }],
+            "2026-11-20": [{ titulo: "Consciencia Negra", tipo: "commemoration" }],
+            "2026-11-25": [{ titulo: "Black Friday Prep", tipo: "meeting" }],
+            // Dezembro
+            "2026-12-10": [{ titulo: "Confraternizacao de Fim de Ano", tipo: "social" }],
+            "2026-12-15": [{ titulo: "Reuniao de Encerramento", tipo: "meeting" }],
+            "2026-12-25": [{ titulo: "Natal - Fechado", tipo: "commemoration" }],
+            "2026-12-31": [{ titulo: "Reveillon - Fechado", tipo: "commemoration" }]
+        };
+
+        // Eventos detalhados (mantidos do original, adaptados)
+        var eventosDetalhados = {
+            6: {
+                titulo: "Reuniao de Gerentes - Abertura do Mes",
+                horario: "08:00 - 09:30",
+                local: "Sala de Conferencias - Matriz",
+                inscritos: 18,
+                descricao: "Reuniao mensal com todos os gerentes de loja para alinhamento de metas, resultados do mes anterior e planejamento de acoes para o proximo periodo.",
+                tags: ["Reuniao", "Estrategico"],
+                inscrito: false,
+                tipo: "meeting"
+            },
+            8: {
+                titulo: "Onboarding - Novos Colaboradores",
+                horario: "09:00 - 12:00",
+                local: "Sala de Treinamento - Matriz",
+                inscritos: 12,
+                descricao: "Integracao dos novos colaboradores com apresentacao da cultura Economart, politicas internas, beneficios e tour pela unidade.",
+                tags: ["Treinamento", "RH"],
+                inscrito: false,
+                tipo: "training"
+            },
+            13: {
+                titulo: "Sessao de Yoga - Economart Saude",
+                horario: "18:00 - 19:00",
+                local: "Sala de Bem-estar - Matriz",
+                inscritos: 34,
+                descricao: "Sessao semanal de yoga para todos os colaboradores. Traga seu tapete e roupas confortaveis. Iniciantes sao bem-vindos!",
+                tags: ["Bem-estar", "Yoga"],
+                inscrito: true,
+                tipo: "wellness"
+            },
+            14: {
+                titulo: "Happy Hour - Confraternizacao Mensal",
+                horario: "17:30 - 20:00",
+                local: "Espaco Gourmet - Matriz",
+                inscritos: 78,
+                descricao: "Momento de descontracao e integracao entre as equipes. Teremos musica ao vivo, petiscos e bebidas. Venha celebrar mais um mes de conquistas!",
+                tags: ["Social", "Confraternizacao"],
+                inscrito: false,
+                tipo: "social"
+            },
+            15: {
+                titulo: "Treinamento de Lideranca e Gestao de Equipes",
+                horario: "09:00 - 17:00",
+                local: "Sala 302 - Matriz",
+                inscritos: 24,
+                descricao: "Capacitacao intensiva para lideres e gestores. Temas: comunicacao assertiva, feedback, gestao de conflitos e motivacao de equipes. Certificado de 8h.",
+                tags: ["Treinamento", "Obrigatorio"],
+                inscrito: true,
+                tipo: "training"
+            },
+            16: {
+                titulo: "Happy Hour Economart - Comemoracao de 15 Anos",
+                horario: "18:00 - 22:00",
+                local: "Espaco Gourmet - Matriz",
+                inscritos: 156,
+                descricao: "Grande celebracao dos 15 anos da Economart! Teremos jantar, premios, homenagens e muita diversao. Traje esporte fino. Acompanhantes liberados.",
+                tags: ["Social", "Comemoracao"],
+                inscrito: false,
+                tipo: "social"
+            },
+            19: {
+                titulo: "Workshop: Novo Sistema de Gestao de Estoque",
+                horario: "14:00 - 16:00",
+                local: "Auditorio - Matriz",
+                inscritos: 42,
+                descricao: "Apresentacao pratica do novo ERP de gestao de estoque. Obrigatorio para equipe de operacoes, logistica e gerentes de loja.",
+                tags: ["Treinamento", "TI"],
+                inscrito: false,
+                tipo: "training"
+            },
+            22: {
+                titulo: "Dia do Desafio Fitness - Corrida de 5km",
+                horario: "07:00 - 10:00",
+                local: "Parque Central - Salvador, BA",
+                inscritos: 89,
+                descricao: "Participe da corrida de 5km do Desafio Fitness! Kit do participante inclui camiseta, numero de peito e medalha de conclusao. Premios para os 3 primeiros colocados.",
+                tags: ["Bem-estar", "Social"],
+                inscrito: true,
+                tipo: "wellness"
+            },
+            26: {
+                titulo: "Reuniao de Diretoria - Planejamento Estrategico",
+                horario: "10:00 - 12:00",
+                local: "Sala do Conselho - Matriz",
+                inscritos: 8,
+                descricao: "Reuniao estrategica mensal da diretoria para avaliacao de KPIs, decisoes estruturais e definicao de diretrizes para o proximo trimestre.",
+                tags: ["Reuniao", "Diretoria"],
+                inscrito: false,
+                tipo: "meeting"
+            },
+            29: {
+                titulo: "Dia dos Pais - Homenagem aos Colaboradores",
+                horario: "11:00 - 13:00",
+                local: "Refeitorio - Matriz",
+                inscritos: 203,
+                descricao: "Almoco especial em homenagem ao Dia dos Pais. Teremos brindes, sorteios e uma linda homenagem para todos os pais da Economart. Acompanhantes liberados.",
+                tags: ["Social", "Comemoracao"],
+                inscrito: false,
+                tipo: "social"
+            }
+        };
+
+        var badgeClasses = {
+            training: 'badge-training',
+            social: 'badge-social',
+            meeting: 'badge-meeting',
+            wellness: 'badge-wellness',
+            commemoration: 'badge-commemoration'
+        };
+
+        function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+        function renderCalendar() {
+            var grid = document.getElementById('calendarGrid');
+            var title = document.getElementById('calendarMonthYear');
+
+            title.textContent = meses[currentMonth] + ' ' + currentYear;
+
+            var html = '';
+
+            // Cabecalho dos dias da semana
+            diasSemana.forEach(function(dia) {
+                html += '<div class="calendar-day-label">' + dia + '</div>';
+            });
+
+            var firstDay = new Date(currentYear, currentMonth, 1);
+            var lastDay = new Date(currentYear, currentMonth + 1, 0);
+            var startDayOfWeek = firstDay.getDay(); // 0 = Domingo
+            var daysInMonth = lastDay.getDate();
+
+            // Dias do mes anterior (preencher grid)
+            var prevMonth = new Date(currentYear, currentMonth, 0);
+            var daysInPrevMonth = prevMonth.getDate();
+            for (var i = startDayOfWeek - 1; i >= 0; i--) {
+                var day = daysInPrevMonth - i;
+                html += '<div class="calendar-day other-month" data-day="' + day + '"><span class="day-number">' + day + '</span></div>';
+            }
+
+            // Dias do mes atual
+            var today = new Date();
+            var isCurrentMonth = today.getFullYear() === currentYear && today.getMonth() === currentMonth;
+            var todayDay = today.getDate();
+
+            for (var day = 1; day <= daysInMonth; day++) {
+                var dateKey = currentYear + '-' + pad2(currentMonth + 1) + '-' + pad2(day);
+                var eventosDia = eventosPorData[dateKey] || [];
+                var isToday = isCurrentMonth && day === todayDay;
+                var isSelected = day === 15 && currentMonth === 5; // 15 de junho selecionado por padrao
+
+                var classes = 'calendar-day';
+                if (isToday) classes += ' today';
+                if (isSelected) classes += ' selected';
+
+                var badgesHtml = '';
+                if (eventosDia.length > 0) {
+                    badgesHtml = '<div class="event-badges">';
+                    eventosDia.slice(0, 3).forEach(function(ev) {
+                        var badgeClass = badgeClasses[ev.tipo] || 'badge-training';
+                        badgesHtml += '<div class="event-badge ' + badgeClass + '">' + ev.titulo + '</div>';
+                    });
+                    if (eventosDia.length > 3) {
+                        badgesHtml += '<div class="more-events">+' + (eventosDia.length - 3) + ' mais</div>';
+                    }
+                    badgesHtml += '</div>';
+                }
+
+                var onclick = eventosDia.length > 0 ? 'onclick="showEventDetail(' + day + ')"' : '';
+                html += '<div class="' + classes + '" data-day="' + day + '" ' + onclick + '><span class="day-number">' + day + '</span>' + badgesHtml + '</div>';
+            }
+
+            // Dias do proximo mes (preencher grid)
+            var totalCells = startDayOfWeek + daysInMonth;
+            var remainingCells = 42 - totalCells; // 6 semanas = 42 celulas
+            for (var day = 1; day <= remainingCells; day++) {
+                html += '<div class="calendar-day other-month" data-day="' + day + '"><span class="day-number">' + day + '</span></div>';
+            }
+
+            grid.innerHTML = html;
+
+            // Reattach click handlers para selecao
+            document.querySelectorAll('.calendar-day:not(.other-month)').forEach(function(dayEl) {
+                dayEl.addEventListener('click', function() {
+                    document.querySelectorAll('.calendar-day').forEach(function(d) { d.classList.remove('selected'); });
+                    this.classList.add('selected');
+                });
+            });
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function showEventDetail(day) {
+            var evento = eventosDetalhados[day];
+            if (!evento) return;
+
+            var panel = document.getElementById('eventDetailPanel');
+            var title = document.getElementById('detailTitle');
+            var meta = document.getElementById('detailMeta');
+            var desc = document.getElementById('detailDesc');
+            var actions = document.getElementById('detailActions');
+
+            title.textContent = evento.titulo;
+
+            meta.innerHTML = 
+                '<div class="event-detail-meta-item"><i class="fas fa-calendar-day"></i> ' + day + ' de ' + meses[currentMonth] + ' de ' + currentYear + '</div>' +
+                '<div class="event-detail-meta-item"><i class="fas fa-clock"></i> ' + evento.horario + '</div>' +
+                '<div class="event-detail-meta-item"><i class="fas fa-map-marker-alt"></i> ' + evento.local + '</div>' +
+                '<div class="event-detail-meta-item"><i class="fas fa-users"></i> ' + evento.inscritos + ' inscritos</div>';
+
+            var tagsHtml = '';
+            evento.tags.forEach(function(tag) {
+                tagsHtml += '<span style="padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; background: #EFF6FF; color: var(--primary);">' + tag + '</span>';
+            });
+
+            desc.innerHTML = 
+                '<p>' + evento.descricao + '</p>' +
+                '<div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">' + tagsHtml + '</div>';
+
+            var btnClass = evento.inscrito ? 'outline' : 'primary';
+            var btnText = evento.inscrito ? '<i class="fas fa-check"></i> Ja inscrito' : '<i class="fas fa-plus"></i> Inscrever-se';
+            var btnStyle = evento.inscrito ? 'event-detail-btn outline' : 'event-detail-btn primary';
+
+            actions.innerHTML = 
+                '<button class="' + btnStyle + '">' + btnText + '</button>' +
+                '<button class="event-detail-btn outline"><i class="fas fa-share-alt"></i> Compartilhar</button>';
+
+            panel.classList.add('active');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeEventDetail() {
+            document.getElementById('eventDetailPanel').classList.remove('active');
+        }
+
+        // Inicializar
+        renderCalendar();
+    </script>
+
+    <!-- Minhas Inscricoes - modulo exclusivo da tela eventos -->
+    <script src="/js/modules/inscricoes_eventos.js"></script>
+
+    <!-- Sidebar Component (injeta a sidebar automaticamente) -->
+    <script src="/js/nav_side/sidebar.js"></script>
+
+    <!-- Navbar Component (injeta a navbar + CSS automaticamente) -->
+    <script src="/js/nav_side/navbar.js"></script>
+</body>
+</html>

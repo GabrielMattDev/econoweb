@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Maria Silva - Economart Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E40AF; --primary-light: #3B82F6; --primary-dark: #1E3A8A;
+            --secondary: #059669; --accent: #EA580C; --danger: #DC2626;
+            --purple: #7C3AED; --pink: #DB2777; --gold: #F59E0B;
+            --dark: #0F172A; --dark-light: #1E293B; --gray: #64748B;
+            --gray-light: #94A3B8; --gray-lighter: #CBD5E1;
+            --bg: #F8FAFC; --bg-card: #FFFFFF; --bg-hover: #F1F5F9;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 16px; --radius-sm: 12px; --radius-xs: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--dark); line-height: 1.5; overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--gray-lighter); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gray-light); }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+        }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px; font-weight: 800;
+        }
+        .logo-text { font-size: 22px; font-weight: 900; color: var(--dark); letter-spacing: -0.8px; }
+        .logo-text span { color: var(--primary); }
+        .search-box { position: relative; width: 360px; }
+        .search-box input {
+            width: 100%; padding: 10px 16px 10px 42px;
+            border: 1.5px solid var(--border); border-radius: 100px;
+            background: var(--bg); font-size: 14px; font-family: inherit;
+            transition: var(--transition); outline: none;
+        }
+        .search-box input:focus {
+            border-color: var(--primary-light); background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+        }
+        .search-box i {
+            position: absolute; left: 16px; top: 50%;
+            transform: translateY(-50%); color: var(--gray-light); font-size: 14px;
+        }
+        .nav-center { display: flex; align-items: center; gap: 4px; }
+        .nav-tab {
+            display: flex; align-items: center; justify-content: center;
+            width: 110px; height: 48px; border-radius: var(--radius-xs);
+            cursor: pointer; color: var(--gray); font-size: 20px;
+            position: relative; transition: var(--transition); text-decoration: none;
+        }
+        .nav-tab:hover { background: var(--bg-hover); color: var(--primary); }
+        .nav-tab.active { color: var(--primary); }
+        .nav-tab.active::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            transform: translateX(-50%); width: 60px; height: 3px;
+            background: var(--primary); border-radius: 3px;
+        }
+        .nav-tab .badge {
+            position: absolute; top: 6px; right: 24px;
+            width: 18px; height: 18px; background: var(--accent);
+            color: white; font-size: 10px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .nav-btn {
+            width: 40px; height: 40px; border: none; background: var(--bg);
+            border-radius: 50%; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; color: var(--dark);
+            font-size: 18px; position: relative; transition: var(--transition);
+        }
+        .nav-btn:hover { background: var(--bg-hover); }
+        .nav-btn .badge {
+            position: absolute; top: -2px; right: -2px;
+            width: 18px; height: 18px; background: var(--danger);
+            color: white; font-size: 10px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid white;
+        }
+        .user-menu {
+            display: flex; align-items: center; gap: 10px;
+            padding: 4px 4px 4px 12px; border-radius: 100px;
+            cursor: pointer; transition: var(--transition); margin-left: 8px;
+            text-decoration: none; color: inherit;
+        }
+        .user-menu:hover { background: var(--bg-hover); }
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), #10B981);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 13px;
+        }
+        .user-menu i { color: var(--gray); font-size: 12px; }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main-layout {
+            display: grid; grid-template-columns: 1fr 340px;
+            gap: 24px; max-width: 1200px; margin: 0 auto;
+            padding: 88px 24px 40px;
+        }
+
+        /* ===== PROFILE HEADER ===== */
+        .profile-header {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden;
+            margin-bottom: 20px; position: relative;
+        }
+        .profile-cover {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--purple));
+            position: relative;
+        }
+        .profile-cover-edit {
+            position: absolute; bottom: 16px; right: 16px;
+            padding: 8px 16px; background: rgba(255,255,255,0.9);
+            border: none; border-radius: 100px; font-size: 13px;
+            font-weight: 600; cursor: pointer; transition: var(--transition);
+            font-family: inherit; display: flex; align-items: center; gap: 6px;
+            color: var(--dark);
+        }
+        .profile-cover-edit:hover { background: white; }
+
+        .profile-header-body {
+            padding: 0 28px 24px; position: relative;
+        }
+        .profile-avatar-wrap {
+            position: relative; margin-top: -60px;
+            display: flex; justify-content: space-between;
+            align-items: flex-end; margin-bottom: 16px;
+        }
+        .profile-avatar {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 5px solid white;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 42px;
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, var(--secondary), #10B981);
+        }
+        .profile-status {
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 3px solid white; position: absolute;
+            bottom: 8px; left: 98px; background: var(--secondary);
+        }
+        .profile-actions {
+            display: flex; gap: 10px; padding-bottom: 8px;
+        }
+        .profile-btn {
+            padding: 10px 20px; border-radius: 100px;
+            font-family: inherit; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center; gap: 8px; border: none;
+        }
+        .profile-btn-primary {
+            background: var(--primary); color: white;
+        }
+        .profile-btn-primary:hover { background: var(--primary-dark); }
+        .profile-btn-outline {
+            background: var(--bg); color: var(--dark);
+            border: 1.5px solid var(--border);
+        }
+        .profile-btn-outline:hover { background: var(--bg-hover); border-color: var(--gray-lighter); }
+
+        .profile-info { margin-top: 8px; }
+        .profile-name {
+            font-size: 24px; font-weight: 800; color: var(--dark);
+            margin-bottom: 4px; display: flex; align-items: center; gap: 10px;
+        }
+        .profile-verified {
+            width: 20px; height: 20px; background: var(--primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 10px;
+        }
+        .profile-role {
+            font-size: 16px; color: var(--gray); font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .profile-meta-row {
+            display: flex; flex-wrap: wrap; gap: 16px;
+            font-size: 14px; color: var(--gray);
+            margin-bottom: 16px;
+        }
+        .profile-meta-row span {
+            display: flex; align-items: center; gap: 6px;
+        }
+        .profile-meta-row i { font-size: 13px; color: var(--gray-light); }
+
+        .profile-bio {
+            font-size: 15px; color: var(--dark-light); line-height: 1.7;
+            margin-bottom: 16px; max-width: 600px;
+        }
+
+        .profile-stats {
+            display: flex; gap: 24px; padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .profile-stat {
+            text-align: center; cursor: pointer; transition: var(--transition);
+            padding: 4px 12px; border-radius: var(--radius-xs);
+        }
+        .profile-stat:hover { background: var(--bg-hover); }
+        .profile-stat-number {
+            font-size: 20px; font-weight: 800; color: var(--dark);
+        }
+        .profile-stat-label {
+            font-size: 13px; color: var(--gray); font-weight: 500;
+        }
+
+        /* ===== PROFILE TABS ===== */
+        .profile-tabs-wrap {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 4px;
+            display: flex; gap: 4px; margin-bottom: 20px;
+            width: fit-content;
+        }
+        .profile-tab {
+            padding: 10px 24px; border-radius: var(--radius-sm);
+            font-family: inherit; font-size: 14px; font-weight: 600;
+            color: var(--gray); cursor: pointer; transition: var(--transition);
+            border: none; background: transparent;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .profile-tab:hover { color: var(--primary); background: var(--bg-hover); }
+        .profile-tab.active {
+            background: var(--primary); color: white;
+        }
+
+        /* ===== TIMELINE ===== */
+        .timeline-section { display: none; }
+        .timeline-section.active { display: block; }
+
+        .activity-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 20px 24px;
+            margin-bottom: 16px; transition: var(--transition);
+        }
+        .activity-card:hover { box-shadow: var(--shadow-md); }
+        .activity-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+        }
+        .activity-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 14px;
+        }
+        .activity-info { flex: 1; }
+        .activity-name {
+            font-size: 14px; font-weight: 700; color: var(--dark);
+        }
+        .activity-action {
+            font-size: 13px; color: var(--gray);
+        }
+        .activity-time {
+            font-size: 12px; color: var(--gray-light);
+        }
+        .activity-content {
+            font-size: 14px; color: var(--dark-light); line-height: 1.6;
+            padding-left: 52px;
+        }
+        .activity-content p { margin-bottom: 8px; }
+        .activity-tags {
+            display: flex; gap: 6px; margin-top: 10px; padding-left: 52px;
+        }
+        .activity-tag {
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 600;
+        }
+
+        /* ===== ABOUT SECTION ===== */
+        .about-section { display: none; }
+        .about-section.active { display: block; }
+
+        .about-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px;
+            margin-bottom: 16px;
+        }
+        .about-title {
+            font-size: 16px; font-weight: 700; color: var(--dark);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .about-title i { color: var(--primary); font-size: 14px; }
+        .about-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+        }
+        .about-item {
+            display: flex; align-items: flex-start; gap: 12px;
+        }
+        .about-icon {
+            width: 36px; height: 36px; border-radius: var(--radius-xs);
+            background: var(--bg); display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 14px; flex-shrink: 0;
+        }
+        .about-label {
+            font-size: 12px; color: var(--gray-light); font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .about-value {
+            font-size: 14px; color: var(--dark); font-weight: 600;
+        }
+
+        /* ===== CONNECTIONS SECTION ===== */
+        .connections-section { display: none; }
+        .connections-section.active { display: block; }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .connection-card {
+            background: var(--bg-card); border-radius: var(--radius-sm);
+            border: 1px solid var(--border); padding: 20px;
+            text-align: center; transition: var(--transition); cursor: pointer;
+        }
+        .connection-card:hover {
+            box-shadow: var(--shadow-md); transform: translateY(-2px);
+            border-color: var(--primary-light);
+        }
+        .connection-avatar {
+            width: 64px; height: 64px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 24px;
+            margin: 0 auto 12px;
+        }
+        .connection-name {
+            font-size: 15px; font-weight: 700; color: var(--dark);
+            margin-bottom: 2px;
+        }
+        .connection-role {
+            font-size: 13px; color: var(--gray); margin-bottom: 12px;
+        }
+        .btn-connect-sm {
+            padding: 8px 20px; background: var(--primary); color: white;
+            border: none; border-radius: 100px; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: var(--transition); font-family: inherit;
+            width: 100%;
+        }
+        .btn-connect-sm:hover { background: var(--primary-dark); }
+
+        /* ===== ACHIEVEMENTS SECTION ===== */
+        .achievements-section { display: none; }
+        .achievements-section.active { display: block; }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        .achievement-card {
+            background: var(--bg-card); border-radius: var(--radius-sm);
+            border: 1px solid var(--border); padding: 24px 16px;
+            text-align: center; transition: var(--transition);
+        }
+        .achievement-card:hover { box-shadow: var(--shadow-md); }
+        .achievement-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; font-size: 24px;
+        }
+        .achievement-name {
+            font-size: 14px; font-weight: 700; color: var(--dark);
+            margin-bottom: 4px;
+        }
+        .achievement-desc {
+            font-size: 12px; color: var(--gray); margin-bottom: 8px;
+        }
+        .achievement-date {
+            font-size: 11px; color: var(--gray-light); font-weight: 600;
+        }
+
+        /* ===== RIGHT SIDEBAR ===== */
+        .right-sidebar {
+            position: sticky; top: 88px;
+            height: calc(100vh - 104px); overflow-y: auto;
+        }
+        .widget {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden;
+        }
+        .widget-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+        }
+        .widget-title {
+            font-size: 15px; font-weight: 700; color: var(--dark);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .widget-title i { color: var(--primary); font-size: 14px; }
+        .widget-more {
+            font-size: 13px; color: var(--primary); font-weight: 600;
+            cursor: pointer; text-decoration: none;
+        }
+        .widget-more:hover { text-decoration: underline; }
+        .widget-body { padding: 12px 0; }
+
+        .skill-item {
+            padding: 10px 20px;
+        }
+        .skill-header {
+            display: flex; justify-content: space-between; margin-bottom: 6px;
+        }
+        .skill-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+        .skill-level { font-size: 12px; color: var(--gray-light); font-weight: 600; }
+        .skill-bar {
+            height: 6px; background: var(--bg-hover); border-radius: 10px; overflow: hidden;
+        }
+        .skill-fill {
+            height: 100%; border-radius: 10px; transition: width 1s ease;
+        }
+
+        .suggestion-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 20px;
+            cursor: pointer; transition: var(--transition);
+        }
+        .suggestion-item:hover { background: var(--bg-hover); }
+        .suggestion-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 12px; flex-shrink: 0;
+        }
+        .suggestion-info { flex: 1; min-width: 0; }
+        .suggestion-name {
+            font-size: 13px; font-weight: 600; color: var(--dark);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .suggestion-role { font-size: 11px; color: var(--gray); }
+        .btn-follow-xs {
+            padding: 4px 12px; background: transparent; color: var(--primary);
+            border: 1.5px solid var(--primary); border-radius: 100px;
+            font-size: 11px; font-weight: 600; cursor: pointer;
+            transition: var(--transition); font-family: inherit;
+        }
+        .btn-follow-xs:hover { background: var(--primary); color: white; }
+
+        .sidebar-footer {
+            padding: 16px 20px; font-size: 12px;
+            color: var(--gray-light); line-height: 1.8;
+        }
+        .sidebar-footer a { color: var(--gray-light); text-decoration: none; }
+        .sidebar-footer a:hover { text-decoration: underline; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .right-sidebar { display: none; }
+        }
+        @media (max-width: 900px) {
+            .main-layout { padding-top: 80px; }
+            .search-box { width: 200px; }
+            .nav-center { display: none; }
+            .profile-avatar { width: 90px; height: 90px; font-size: 32px; }
+            .profile-avatar-wrap { margin-top: -45px; }
+            .profile-status { left: 74px; bottom: 4px; }
+            .profile-actions { width: 100%; }
+            .profile-actions .profile-btn { flex: 1; justify-content: center; }
+            .profile-header-body { padding: 0 20px 20px; }
+            .about-grid { grid-template-columns: 1fr; }
+            .connections-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .navbar { padding: 0 12px; }
+            .logo-text { display: none; }
+            .search-box { display: none; }
+            .profile-cover { height: 140px; }
+            .profile-name { font-size: 20px; }
+            .profile-stats { gap: 12px; }
+            .profile-stat-number { font-size: 16px; }
+            .profile-tabs-wrap { width: 100%; overflow-x: auto; }
+            .profile-tab { padding: 8px 16px; white-space: nowrap; }
+            .connections-grid { grid-template-columns: 1fr; }
+            .achievements-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .profile-header, .activity-card, .about-card, .connection-card, .achievement-card {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="dash.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-network-wired"></i></div>
+                <div class="logo-text">Econom<span>Connect</span></div>
+            </a>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar pessoas, comunidades, posts...">
+            </div>
+        </div>
+        <div class="nav-center">
+            <a href="dash.html" class="nav-tab" title="Feed Principal"><i class="fas fa-home"></i></a>
+            <a href="comunidade.html" class="nav-tab" title="Comunidades"><i class="fas fa-users"></i></a>
+            <a href="msm.html" class="nav-tab" title="Mensagens"><i class="fas fa-comment-dots"></i><span class="badge">3</span></a>
+            <a href="gaming.html" class="nav-tab" title="Gamificacao"><i class="fas fa-trophy"></i></a>
+            <a href="eventos.html" class="nav-tab" title="Eventos"><i class="fas fa-calendar-star"></i></a>
+        </div>
+        <div class="nav-right">
+            <button class="nav-btn" title="Criar"><i class="fas fa-plus"></i></button>
+            <a href="msm.html" style="text-decoration:none;"><button class="nav-btn" title="Mensagens"><i class="fas fa-comment-dots"></i></button></a>
+            <button class="nav-btn" title="Notificacoes"><i class="fas fa-bell"></i><span class="badge">5</span></button>
+            <a href="perfil.html" class="user-menu">
+                <div class="user-avatar">MS</div>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-layout">
+
+        <div class="profile-main">
+            <!-- PROFILE HEADER -->
+            <div class="profile-header">
+                <div class="profile-cover">
+                    <button class="profile-cover-edit"><i class="fas fa-camera"></i> Editar capa</button>
+                </div>
+                <div class="profile-header-body">
+                    <div class="profile-avatar-wrap">
+                        <div style="position: relative;">
+                            <div class="profile-avatar">MS</div>
+                            <div class="profile-status"></div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="profile-btn profile-btn-primary"><i class="fas fa-pen"></i> Editar perfil</button>
+                            <button class="profile-btn profile-btn-outline"><i class="fas fa-share-alt"></i> Compartilhar</button>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">
+                            Maria Silva
+                            <div class="profile-verified"><i class="fas fa-check"></i></div>
+                        </div>
+                        <div class="profile-role">Gerente Regional de Operacoes</div>
+                        <div class="profile-meta-row">
+                            <span><i class="fas fa-building"></i> Matriz - Salvador, BA</span>
+                            <span><i class="fas fa-briefcase"></i> 3 anos na Economart</span>
+                            <span><i class="fas fa-envelope"></i> maria.silva@economart.com.br</span>
+                            <span><i class="fas fa-phone"></i> (71) 99999-8888</span>
+                        </div>
+                        <div class="profile-bio">
+                            Apaixonada por varejo e desenvolvimento de pessoas. Lidero a regiao Nordeste com foco em resultados, inovacao e bem-estar da equipe. Sempre em busca de novos desafios e oportunidades de crescimento.
+                        </div>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="profile-stat-number">234</div>
+                                <div class="profile-stat-label">Conexoes</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number">45</div>
+                                <div class="profile-stat-label">Posts</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number">12</div>
+                                <div class="profile-stat-label">Comunidades</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number">8</div>
+                                <div class="profile-stat-label">Eventos</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-number">1.2k</div>
+                                <div class="profile-stat-label">Pontos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="profile-tabs-wrap">
+                <button class="profile-tab active" onclick="switchTab('timeline')" data-tab="timeline">
+                    <i class="fas fa-stream"></i> Timeline
+                </button>
+                <button class="profile-tab" onclick="switchTab('about')" data-tab="about">
+                    <i class="fas fa-user"></i> Sobre
+                </button>
+                <button class="profile-tab" onclick="switchTab('connections')" data-tab="connections">
+                    <i class="fas fa-users"></i> Conexoes
+                </button>
+                <button class="profile-tab" onclick="switchTab('achievements')" data-tab="achievements">
+                    <i class="fas fa-trophy"></i> Conquistas
+                </button>
+            </div>
+
+            <!-- TIMELINE SECTION -->
+            <div class="timeline-section active" id="timeline">
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                        <div class="activity-info">
+                            <div class="activity-name">Maria Silva <span style="color: var(--gray); font-weight: 400;">publicou</span></div>
+                            <div class="activity-time">Ha 2 dias</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        <p>Finalizamos o planejamento estrategico do Q3! Muito orgulhosa da minha equipe por mais um trimestre de resultados excepcionais. Vamos juntos continuar crescendo!</p>
+                        <div class="activity-tags">
+                            <span class="activity-tag" style="background: #EFF6FF; color: var(--primary);">#PlanejamentoEstrategico</span>
+                            <span class="activity-tag" style="background: #ECFDF5; color: var(--secondary);">#Resultados</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                        <div class="activity-info">
+                            <div class="activity-name">Maria Silva <span style="color: var(--gray); font-weight: 400;">completou a conquista</span></div>
+                            <div class="activity-time">Ha 1 semana</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Lider de Resultados</strong> - Alcancou 120% da meta do trimestre</p>
+                        <div style="margin-top: 10px; padding: 16px; background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-radius: var(--radius-xs); display: inline-flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-medal" style="font-size: 32px; color: var(--accent);"></i>
+                            <div>
+                                <div style="font-weight: 700; color: var(--dark);">Lider de Resultados</div>
+                                <div style="font-size: 13px; color: var(--gray);">Conquista rara · 150 pontos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                        <div class="activity-info">
+                            <div class="activity-name">Maria Silva <span style="color: var(--gray); font-weight: 400;">participou do evento</span></div>
+                            <div class="activity-time">Ha 2 semanas</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Treinamento de Lideranca e Gestao de Equipes</strong></p>
+                        <p style="color: var(--gray); font-size: 13px;">Sala 302 - Matriz · 09:00 - 17:00</p>
+                        <div class="activity-tags">
+                            <span class="activity-tag" style="background: #EFF6FF; color: var(--primary);">Treinamento</span>
+                            <span class="activity-tag" style="background: #FFF7ED; color: var(--accent);">Obrigatorio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                        <div class="activity-info">
+                            <div class="activity-name">Maria Silva <span style="color: var(--gray); font-weight: 400;">comemorou</span></div>
+                            <div class="activity-time">Ha 3 semanas</div>
+                        </div>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>3 anos na Economart!</strong></p>
+                        <p>Gratidao por cada momento, cada aprendizado e cada pessoa que fez parte dessa jornada. Aqui e minha segunda casa!</p>
+                        <div class="activity-tags">
+                            <span class="activity-tag" style="background: #FDF2F8; color: var(--pink);">#AniversarioDeEmpresa</span>
+                            <span class="activity-tag" style="background: #ECFDF5; color: var(--secondary);">#3Anos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABOUT SECTION -->
+            <div class="about-section" id="about">
+                <div class="about-card">
+                    <div class="about-title"><i class="fas fa-info-circle"></i> Informacoes Profissionais</div>
+                    <div class="about-grid">
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-briefcase"></i></div>
+                            <div>
+                                <div class="about-label">Cargo</div>
+                                <div class="about-value">Gerente Regional de Operacoes</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-building"></i></div>
+                            <div>
+                                <div class="about-label">Departamento</div>
+                                <div class="about-value">Operacoes de Loja</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <div class="about-label">Unidade</div>
+                                <div class="about-value">Matriz - Salvador, BA</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-calendar"></i></div>
+                            <div>
+                                <div class="about-label">Data de Admissao</div>
+                                <div class="about-value">15 de Maio de 2023</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div>
+                                <div class="about-label">Formacao</div>
+                                <div class="about-value">MBA em Gestao de Varejo - FGV</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-id-badge"></i></div>
+                            <div>
+                                <div class="about-label">Matricula</div>
+                                <div class="about-value">ECON-2023-0042</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-card">
+                    <div class="about-title"><i class="fas fa-address-card"></i> Contato</div>
+                    <div class="about-grid">
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <div class="about-label">E-mail Corporativo</div>
+                                <div class="about-value">maria.silva@economart.com.br</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-phone"></i></div>
+                            <div>
+                                <div class="about-label">Telefone</div>
+                                <div class="about-value">(71) 99999-8888</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <div class="about-label">Horario de Trabalho</div>
+                                <div class="about-value">Seg a Sex, 08:00 - 18:00</div>
+                            </div>
+                        </div>
+                        <div class="about-item">
+                            <div class="about-icon"><i class="fas fa-user-tie"></i></div>
+                            <div>
+                                <div class="about-label">Gestor Direto</div>
+                                <div class="about-value">Carlos Mendes - Diretor de Operacoes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONNECTIONS SECTION -->
+            <div class="connections-section" id="connections">
+                <div class="connections-grid">
+                    <div class="connection-card">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">RL</div>
+                        <div class="connection-name">Roberto Lima</div>
+                        <div class="connection-role">Gerente de Loja</div>
+                        <button class="btn-connect-sm">Ver perfil</button>
+                    </div>
+                    <div class="connection-card">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">JP</div>
+                        <div class="connection-name">Joao Pereira</div>
+                        <div class="connection-role">Caixa</div>
+                        <button class="btn-connect-sm">Ver perfil</button>
+                    </div>
+                    <div class="connection-card">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #DB2777, #BE185D);">AN</div>
+                        <div class="connection-name">Ana Nunes</div>
+                        <div class="connection-role">Reposicao</div>
+                        <button class="btn-connect-sm">Ver perfil</button>
+                    </div>
+                    <div class="connection-card">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #0D9488, #0F766E);">CL</div>
+                        <div class="connection-name">Carlos Lima</div>
+                        <div class="connection-role">Analista de TI</div>
+                        <button class="btn-connect-sm">Ver perfil</button>
+                    </div>
+                    <div class="connection-card">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #7C3AED, #6D28D9);">MF</div>
+                        <div class="connection-name">Marcos Ferreira</div>
+                        <div class="connection-role">Especialista em Frios</div>
+                        <button class="btn-connect-sm">Ver perfil</button>
+                    </div>
+                    <div class="connection-card">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">RL2</div>
+                        <div class="connection-name">Roberta Lopes</div>
+                        <div class="connection-role">Supervisora de Loja</div>
+                        <button class="btn-connect-sm">Ver perfil</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACHIEVEMENTS SECTION -->
+            <div class="achievements-section" id="achievements">
+                <div class="achievements-grid">
+                    <div class="achievement-card">
+                        <div class="achievement-icon" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: var(--accent);">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <div class="achievement-name">Lider de Resultados</div>
+                        <div class="achievement-desc">120% da meta do trimestre</div>
+                        <div class="achievement-date">Abr 2026</div>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon" style="background: linear-gradient(135deg, #EFF6FF, #DBEAFE); color: var(--primary);">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="achievement-name">Colaborador Destaque</div>
+                        <div class="achievement-desc">Reconhecimento mensal</div>
+                        <div class="achievement-date">Mar 2026</div>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon" style="background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: var(--secondary);">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="achievement-name">Bem-Estar em Dia</div>
+                        <div class="achievement-desc">10 eventos de saude</div>
+                        <div class="achievement-date">Fev 2026</div>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon" style="background: linear-gradient(135deg, #F3E8FF, #E9D5FF); color: var(--purple);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="achievement-name">Conector</div>
+                        <div class="achievement-desc">100+ conexoes na rede</div>
+                        <div class="achievement-date">Jan 2026</div>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon" style="background: linear-gradient(135deg, #FDF2F8, #FCE7F3); color: var(--pink);">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="achievement-name">Comunicador</div>
+                        <div class="achievement-desc">50+ posts no feed</div>
+                        <div class="achievement-date">Dez 2025</div>
+                    </div>
+                    <div class="achievement-card">
+                        <div class="achievement-icon" style="background: linear-gradient(135deg, #FFF7ED, #FFEDD5); color: var(--accent);">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="achievement-name">Em Alta</div>
+                        <div class="achievement-desc">Post com 500+ interacoes</div>
+                        <div class="achievement-date">Nov 2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="right-sidebar">
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-bolt"></i> Habilidades</div>
+                    <a href="#" class="widget-more">Ver todas</a>
+                </div>
+                <div class="widget-body">
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Gestao de Equipes</span>
+                            <span class="skill-level">95%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 95%; background: var(--primary);"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Planejamento Estrategico</span>
+                            <span class="skill-level">90%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 90%; background: var(--primary);"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Varejo e Operacoes</span>
+                            <span class="skill-level">88%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 88%; background: var(--secondary);"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Comunicacao</span>
+                            <span class="skill-level">85%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 85%; background: var(--purple);"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span class="skill-name">Analise de Dados</span>
+                            <span class="skill-level">75%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" style="width: 75%; background: var(--accent);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-user-plus"></i> Pessoas que voce pode conhecer</div>
+                </div>
+                <div class="widget-body">
+                    <div class="suggestion-item">
+                        <div class="suggestion-avatar" style="background: linear-gradient(135deg, #0D9488, #0F766E);">FC</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">Fernanda Costa</div>
+                            <div class="suggestion-role">Marketing Digital</div>
+                        </div>
+                        <button class="btn-follow-xs">Conectar</button>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">CM</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">Carlos Mendes</div>
+                            <div class="suggestion-role">Diretor de Operacoes</div>
+                        </div>
+                        <button class="btn-follow-xs">Conectar</button>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">PS</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">Pedro Santos</div>
+                            <div class="suggestion-role">Analista de RH</div>
+                        </div>
+                        <button class="btn-follow-xs">Conectar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-chart-line"></i> Atividade</div>
+                </div>
+                <div class="widget-body" style="padding: 16px 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 13px; color: var(--gray);">Posts este mes</span>
+                        <span style="font-size: 14px; font-weight: 700; color: var(--dark);">8</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 13px; color: var(--gray);">Comentarios</span>
+                        <span style="font-size: 14px; font-weight: 700; color: var(--dark);">34</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 13px; color: var(--gray);">Curtidas recebidas</span>
+                        <span style="font-size: 14px; font-weight: 700; color: var(--dark);">287</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: var(--gray);">Eventos participados</span>
+                        <span style="font-size: 14px; font-weight: 700; color: var(--dark);">3</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#">Sobre</a> .
+                <a href="#">Privacidade</a> .
+                <a href="#">Termos</a> .
+                <a href="#">Ajuda</a><br>
+                Economart Connect 2026
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.timeline-section, .about-section, .connections-section, .achievements-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            // Update tab buttons
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        }
+    </script>
+</body>
+</html>

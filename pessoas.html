@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pessoas - Economart Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E40AF; --primary-light: #3B82F6; --primary-dark: #1E3A8A;
+            --secondary: #059669; --accent: #EA580C; --danger: #DC2626;
+            --purple: #7C3AED; --pink: #DB2777; --dark: #0F172A; --dark-light: #1E293B;
+            --gray: #64748B; --gray-light: #94A3B8; --gray-lighter: #CBD5E1;
+            --bg: #F8FAFC; --bg-card: #FFFFFF; --bg-hover: #F1F5F9; --border: #E2E8F0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 16px; --radius-sm: 12px; --radius-xs: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--dark); line-height: 1.5; overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--gray-lighter); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gray-light); }
+
+        /* ===== NAVBAR (igual dash) ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+        }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-xs);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px; font-weight: 800;
+        }
+        .logo-text { font-size: 22px; font-weight: 900; color: var(--dark); letter-spacing: -0.8px; }
+        .logo-text span { color: var(--primary); }
+        .search-box { position: relative; width: 360px; }
+        .search-box input {
+            width: 100%; padding: 10px 16px 10px 42px;
+            border: 1.5px solid var(--border); border-radius: 100px;
+            background: var(--bg); font-size: 14px; font-family: inherit;
+            transition: var(--transition); outline: none;
+        }
+        .search-box input:focus {
+            border-color: var(--primary-light); background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+        }
+        .search-box i {
+            position: absolute; left: 16px; top: 50%;
+            transform: translateY(-50%); color: var(--gray-light); font-size: 14px;
+        }
+        .nav-center { display: flex; align-items: center; gap: 4px; }
+        .nav-tab {
+            display: flex; align-items: center; justify-content: center;
+            width: 110px; height: 48px; border-radius: var(--radius-xs);
+            cursor: pointer; color: var(--gray); font-size: 20px;
+            position: relative; transition: var(--transition); text-decoration: none;
+        }
+        .nav-tab:hover { background: var(--bg-hover); color: var(--primary); }
+        .nav-tab.active { color: var(--primary); }
+        .nav-tab.active::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            transform: translateX(-50%); width: 60px; height: 3px;
+            background: var(--primary); border-radius: 3px;
+        }
+        .nav-tab .badge {
+            position: absolute; top: 6px; right: 24px;
+            width: 18px; height: 18px; background: var(--accent);
+            color: white; font-size: 10px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .nav-btn {
+            width: 40px; height: 40px; border: none; background: var(--bg);
+            border-radius: 50%; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; color: var(--dark);
+            font-size: 18px; position: relative; transition: var(--transition);
+        }
+        .nav-btn:hover { background: var(--bg-hover); }
+        .nav-btn .badge {
+            position: absolute; top: -2px; right: -2px;
+            width: 18px; height: 18px; background: var(--danger);
+            color: white; font-size: 10px; font-weight: 700;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid white;
+        }
+        .user-menu {
+            display: flex; align-items: center; gap: 10px;
+            padding: 4px 4px 4px 12px; border-radius: 100px;
+            cursor: pointer; transition: var(--transition); margin-left: 8px;
+        }
+        .user-menu:hover { background: var(--bg-hover); }
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 13px;
+        }
+        .user-menu i { color: var(--gray); font-size: 12px; }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main-layout {
+            display: grid; grid-template-columns: 280px 1fr;
+            gap: 24px; max-width: 1400px; margin: 0 auto;
+            padding: 88px 24px 40px;
+        }
+
+        /* ===== LEFT SIDEBAR FILTERS ===== */
+        .left-sidebar {
+            position: sticky; top: 88px;
+            height: calc(100vh - 104px); overflow-y: auto;
+        }
+        .filter-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px;
+            padding: 20px;
+        }
+        .filter-title {
+            font-size: 15px; font-weight: 700; color: var(--dark);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .filter-title i { color: var(--primary); font-size: 14px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group:last-child { margin-bottom: 0; }
+        .filter-label {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--gray-light); margin-bottom: 10px;
+        }
+        .filter-option {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0; cursor: pointer; transition: var(--transition);
+        }
+        .filter-option:hover { color: var(--primary); }
+        .filter-option input[type="checkbox"] {
+            width: 18px; height: 18px; accent-color: var(--primary);
+            cursor: pointer;
+        }
+        .filter-option span {
+            font-size: 14px; color: var(--dark-light); font-weight: 500;
+        }
+        .filter-count {
+            margin-left: auto; font-size: 12px; color: var(--gray-light);
+            background: var(--bg); padding: 2px 8px; border-radius: 100px;
+        }
+        .filter-search {
+            position: relative; margin-bottom: 16px;
+        }
+        .filter-search input {
+            width: 100%; padding: 10px 12px 10px 36px;
+            border: 1.5px solid var(--border); border-radius: var(--radius-xs);
+            background: var(--bg); font-size: 13px; font-family: inherit;
+            outline: none; transition: var(--transition);
+        }
+        .filter-search input:focus {
+            border-color: var(--primary-light); background: white;
+        }
+        .filter-search i {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%); color: var(--gray-light); font-size: 12px;
+        }
+        .btn-clear {
+            width: 100%; padding: 10px; background: transparent;
+            border: 1.5px solid var(--border); border-radius: var(--radius-xs);
+            color: var(--gray); font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: var(--transition); font-family: inherit;
+            margin-top: 8px;
+        }
+        .btn-clear:hover {
+            border-color: var(--primary); color: var(--primary);
+        }
+
+        /* ===== CENTER CONTENT ===== */
+        .center-content { width: 100%; }
+
+        /* Header da pagina */
+        .page-header {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 24px 28px;
+            margin-bottom: 24px;
+        }
+        .page-header-top {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 24px; font-weight: 800; color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+        .page-title span { color: var(--primary); }
+        .page-subtitle {
+            font-size: 14px; color: var(--gray); margin-top: 4px;
+        }
+        .page-actions {
+            display: flex; gap: 10px;
+        }
+        .btn-action {
+            padding: 10px 20px; border-radius: 100px; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: var(--transition);
+            font-family: inherit; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-primary {
+            background: var(--primary); color: white; border: none;
+        }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-secondary {
+            background: var(--bg); color: var(--dark); border: 1.5px solid var(--border);
+        }
+        .btn-secondary:hover { background: var(--bg-hover); border-color: var(--gray-lighter); }
+
+        /* Search bar grande */
+        .people-search {
+            position: relative;
+        }
+        .people-search input {
+            width: 100%; padding: 14px 20px 14px 48px;
+            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--bg); font-size: 15px; font-family: inherit;
+            outline: none; transition: var(--transition);
+        }
+        .people-search input:focus {
+            border-color: var(--primary-light); background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+        }
+        .people-search i {
+            position: absolute; left: 18px; top: 50%;
+            transform: translateY(-50%); color: var(--gray-light); font-size: 16px;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex; align-items: center; gap: 24px;
+            margin-top: 20px; padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        .stat-item {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .stat-number {
+            font-size: 20px; font-weight: 800; color: var(--primary);
+        }
+        .stat-label {
+            font-size: 13px; color: var(--gray); font-weight: 500;
+        }
+
+        /* ===== TABS DE VISUALIZACAO ===== */
+        .view-tabs {
+            display: flex; align-items: center; gap: 4px;
+            margin-bottom: 20px;
+            background: var(--bg-card); border-radius: var(--radius-sm);
+            border: 1px solid var(--border); padding: 4px;
+            width: fit-content;
+        }
+        .view-tab {
+            padding: 8px 16px; border-radius: var(--radius-xs);
+            font-size: 14px; font-weight: 600; color: var(--gray);
+            cursor: pointer; transition: var(--transition); border: none;
+            background: transparent; font-family: inherit;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .view-tab:hover { color: var(--dark); }
+        .view-tab.active {
+            background: var(--primary); color: white;
+        }
+
+        /* ===== GRID DE PESSOAS ===== */
+        .people-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .person-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden;
+            transition: var(--transition); cursor: pointer;
+            position: relative;
+        }
+        .person-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            border-color: var(--primary-light);
+        }
+
+        .person-cover {
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            position: relative;
+        }
+        .person-cover.secondary { background: linear-gradient(135deg, var(--secondary), #10B981); }
+        .person-cover.accent { background: linear-gradient(135deg, var(--accent), #C2410C); }
+        .person-cover.purple { background: linear-gradient(135deg, var(--purple), #6D28D9); }
+        .person-cover.pink { background: linear-gradient(135deg, var(--pink), #BE185D); }
+        .person-cover.teal { background: linear-gradient(135deg, #0D9488, #0F766E); }
+        .person-cover.amber { background: linear-gradient(135deg, #F59E0B, #D97706); }
+
+        .person-avatar-wrap {
+            position: relative; margin-top: -40px;
+            padding: 0 20px; display: flex; justify-content: space-between;
+            align-items: flex-end;
+        }
+        .person-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 4px solid white;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 28px;
+            box-shadow: var(--shadow-md);
+        }
+        .person-status {
+            width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid white; position: absolute;
+            bottom: 4px; left: 78px;
+        }
+        .status-online { background: var(--secondary); }
+        .status-away { background: var(--accent); }
+        .status-offline { background: var(--gray-lighter); }
+
+        .person-actions {
+            display: flex; gap: 6px;
+        }
+        .person-action-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1.5px solid var(--border); background: white;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray); cursor: pointer; transition: var(--transition);
+            font-size: 14px;
+        }
+        .person-action-btn:hover {
+            background: var(--primary); color: white; border-color: var(--primary);
+        }
+
+        .person-info { padding: 16px 20px 20px; }
+        .person-name {
+            font-size: 16px; font-weight: 700; color: var(--dark);
+            margin-bottom: 4px;
+        }
+        .person-role {
+            font-size: 13px; color: var(--gray); font-weight: 500;
+            margin-bottom: 2px;
+        }
+        .person-store {
+            font-size: 12px; color: var(--gray-light); font-weight: 500;
+        }
+        .person-store i { font-size: 10px; margin-right: 4px; }
+
+        .person-tags {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            padding: 0 20px 16px;
+        }
+        .person-tag {
+            padding: 4px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 600;
+        }
+        .tag-primary { background: #EFF6FF; color: var(--primary); }
+        .tag-secondary { background: #ECFDF5; color: var(--secondary); }
+        .tag-accent { background: #FFF7ED; color: var(--accent); }
+        .tag-purple { background: #F3E8FF; color: var(--purple); }
+
+        .person-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 20px; border-top: 1px solid var(--border);
+            background: var(--bg);
+        }
+        .person-footer-left {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12px; color: var(--gray);
+        }
+        .person-footer-left i { font-size: 10px; }
+        .btn-connect {
+            padding: 6px 14px; background: var(--primary); color: white;
+            border: none; border-radius: 100px; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: var(--transition); font-family: inherit;
+        }
+        .btn-connect:hover { background: var(--primary-dark); }
+        .btn-connected {
+            padding: 6px 14px; background: var(--bg-hover); color: var(--gray);
+            border: 1.5px solid var(--border); border-radius: 100px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            transition: var(--transition); font-family: inherit;
+        }
+        .btn-connected:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* ===== LIST VIEW ===== */
+        .people-list {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .person-list-item {
+            background: var(--bg-card); border-radius: var(--radius-sm);
+            border: 1px solid var(--border); padding: 16px 20px;
+            display: flex; align-items: center; gap: 16px;
+            transition: var(--transition); cursor: pointer;
+        }
+        .person-list-item:hover {
+            box-shadow: var(--shadow-md); border-color: var(--primary-light);
+        }
+        .list-avatar {
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 18px; flex-shrink: 0;
+        }
+        .list-info { flex: 1; min-width: 0; }
+        .list-name {
+            font-size: 15px; font-weight: 700; color: var(--dark);
+            margin-bottom: 2px;
+        }
+        .list-meta {
+            font-size: 13px; color: var(--gray); font-weight: 500;
+        }
+        .list-tags {
+            display: flex; gap: 6px; flex-wrap: wrap;
+        }
+        .list-actions {
+            display: flex; gap: 8px; flex-shrink: 0;
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin-top: 32px; padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        .page-btn {
+            width: 40px; height: 40px; border-radius: var(--radius-xs);
+            border: 1.5px solid var(--border); background: var(--bg-card);
+            color: var(--dark); font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: var(--transition); font-family: inherit;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .page-btn:hover { background: var(--bg-hover); border-color: var(--gray-lighter); }
+        .page-btn.active {
+            background: var(--primary); color: white; border-color: var(--primary);
+        }
+        .page-btn:disabled {
+            opacity: 0.5; cursor: not-allowed;
+        }
+        .page-ellipsis {
+            color: var(--gray-light); font-size: 14px; font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .main-layout { grid-template-columns: 240px 1fr; }
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; padding-top: 80px; }
+            .left-sidebar { display: none; }
+            .search-box { width: 200px; }
+            .nav-center { display: none; }
+            .people-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+            .page-header-top { flex-direction: column; align-items: flex-start; gap: 16px; }
+        }
+        @media (max-width: 600px) {
+            .navbar { padding: 0 12px; }
+            .logo-text { display: none; }
+            .search-box { display: none; }
+            .people-grid { grid-template-columns: 1fr; }
+            .page-actions { width: 100%; }
+            .page-actions .btn-action { flex: 1; justify-content: center; }
+            .person-list-item { flex-wrap: wrap; }
+            .list-actions { width: 100%; justify-content: flex-end; margin-top: 8px; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .person-card { animation: fadeInUp 0.4s ease forwards; }
+        .person-list-item { animation: fadeInUp 0.4s ease forwards; }
+        .person-card:nth-child(1) { animation-delay: 0.05s; }
+        .person-card:nth-child(2) { animation-delay: 0.1s; }
+        .person-card:nth-child(3) { animation-delay: 0.15s; }
+        .person-card:nth-child(4) { animation-delay: 0.2s; }
+        .person-card:nth-child(5) { animation-delay: 0.25s; }
+        .person-card:nth-child(6) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="dash.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-network-wired"></i></div>
+                <div class="logo-text">Econom<span>Connect</span></div>
+            </a>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar pessoas, comunidades, posts...">
+            </div>
+        </div>
+        <div class="nav-center">
+            <a href="dash.html" class="nav-tab" title="Feed Principal"><i class="fas fa-home"></i></a>
+            <a href="comunidade.html" class="nav-tab" title="Comunidades"><i class="fas fa-users"></i></a>
+            <a href="msm.html" class="nav-tab" title="Mensagens"><i class="fas fa-comment-dots"></i><span class="badge">3</span></a>
+            <a href="gaming.html" class="nav-tab" title="Gamificacao"><i class="fas fa-trophy"></i></a>
+            <a href="eventos.html" class="nav-tab" title="Eventos"><i class="fas fa-calendar-star"></i></a>
+        </div>
+        <div class="nav-right">
+            <button class="nav-btn" title="Criar"><i class="fas fa-plus"></i></button>
+            <a href="msm.html" style="text-decoration:none;"><button class="nav-btn" title="Mensagens"><i class="fas fa-comment-dots"></i></button></a>
+            <button class="nav-btn" title="Notificacoes"><i class="fas fa-bell"></i><span class="badge">5</span></button>
+            <div class="user-menu">
+                <div class="user-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-layout">
+
+        <aside class="left-sidebar">
+            <div class="filter-card">
+                <div class="filter-title"><i class="fas fa-filter"></i> Filtros</div>
+
+                <div class="filter-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar por nome...">
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-label">Setor</div>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Todos os setores</span>
+                        <span class="filter-count">248</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Operacoes de Loja</span>
+                        <span class="filter-count">86</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Tecnologia</span>
+                        <span class="filter-count">24</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Marketing</span>
+                        <span class="filter-count">32</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Recursos Humanos</span>
+                        <span class="filter-count">18</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Financeiro</span>
+                        <span class="filter-count">15</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Logistica</span>
+                        <span class="filter-count">42</span>
+                    </label>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-label">Unidade</div>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Todas as unidades</span>
+                        <span class="filter-count">248</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Matriz</span>
+                        <span class="filter-count">68</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Loja Centro</span>
+                        <span class="filter-count">45</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Loja Norte</span>
+                        <span class="filter-count">38</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Loja Sul</span>
+                        <span class="filter-count">32</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Loja Oeste</span>
+                        <span class="filter-count">28</span>
+                    </label>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-label">Status</div>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Online agora</span>
+                        <span class="filter-count">42</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Disponivel</span>
+                        <span class="filter-count">156</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Ausente</span>
+                        <span class="filter-count">23</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Offline</span>
+                        <span class="filter-count">27</span>
+                    </label>
+                </div>
+
+                <button class="btn-clear"><i class="fas fa-undo"></i> Limpar filtros</button>
+            </div>
+        </aside>
+
+        <main class="center-content">
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <div class="page-title">Diretorio de <span>Pessoas</span></div>
+                        <div class="page-subtitle">Encontre colaboradores, conecte-se e faca networking na Economart</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn-action btn-secondary"><i class="fas fa-download"></i> Exportar</button>
+                        <button class="btn-action btn-primary"><i class="fas fa-user-plus"></i> Convidar</button>
+                    </div>
+                </div>
+                <div class="people-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar por nome, cargo, setor ou loja...">
+                </div>
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <div class="stat-number">248</div>
+                        <div class="stat-label">Colaboradores</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">42</div>
+                        <div class="stat-label">Online agora</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Novos este mes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Unidades</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-tabs">
+                <button class="view-tab active"><i class="fas fa-th-large"></i> Grade</button>
+                <button class="view-tab"><i class="fas fa-list"></i> Lista</button>
+                <button class="view-tab"><i class="fas fa-sitemap"></i> Organograma</button>
+            </div>
+
+            <div class="people-grid">
+                <!-- Card 1 -->
+                <div class="person-card">
+                    <div class="person-cover"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">RL</div>
+                            <div class="person-status status-online"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Roberto Lima</div>
+                        <div class="person-role">Gerente de Loja</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Loja Sul - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-primary">Operacoes</span>
+                        <span class="person-tag tag-secondary">Gerencia</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 156 conexoes
+                        </div>
+                        <button class="btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="person-card">
+                    <div class="person-cover secondary"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                            <div class="person-status status-online"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Maria Silva</div>
+                        <div class="person-role">Gerente Regional</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Matriz - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-primary">Operacoes</span>
+                        <span class="person-tag tag-accent">Diretoria</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 234 conexoes
+                        </div>
+                        <button class="btn-connected">Conectado</button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="person-card">
+                    <div class="person-cover accent"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--accent), #C2410C);">JP</div>
+                            <div class="person-status status-away"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Joao Pereira</div>
+                        <div class="person-role">Caixa</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Loja Centro - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-primary">Operacoes</span>
+                        <span class="person-tag tag-secondary">Frente de Caixa</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 89 conexoes
+                        </div>
+                        <button class="btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="person-card">
+                    <div class="person-cover purple"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--purple), #6D28D9);">AN</div>
+                            <div class="person-status status-online"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Ana Nunes</div>
+                        <div class="person-role">Reposicao</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Loja Norte - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-primary">Operacoes</span>
+                        <span class="person-tag tag-purple">Logistica</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 67 conexoes
+                        </div>
+                        <button class="btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="person-card">
+                    <div class="person-cover pink"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--pink), #BE185D);">CL</div>
+                            <div class="person-status status-offline"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Carlos Lima</div>
+                        <div class="person-role">Analista de TI</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Matriz - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-purple">Tecnologia</span>
+                        <span class="person-tag tag-secondary">Infraestrutura</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 112 conexoes
+                        </div>
+                        <button class="btn-connected">Conectado</button>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="person-card">
+                    <div class="person-cover teal"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, #0D9488, #0F766E);">MF</div>
+                            <div class="person-status status-online"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Marcos Ferreira</div>
+                        <div class="person-role">Especialista em Frios</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Loja Norte - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-primary">Operacoes</span>
+                        <span class="person-tag tag-accent">Perishables</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 45 conexoes
+                        </div>
+                        <button class="btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="person-card">
+                    <div class="person-cover amber"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">RL2</div>
+                            <div class="person-status status-away"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Roberta Lopes</div>
+                        <div class="person-role">Supervisora de Loja</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Loja Oeste - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-primary">Operacoes</span>
+                        <span class="person-tag tag-secondary">Supervisao</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 178 conexoes
+                        </div>
+                        <button class="btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="person-card">
+                    <div class="person-cover"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">FC</div>
+                            <div class="person-status status-online"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Fernanda Costa</div>
+                        <div class="person-role">Analista de Marketing Digital</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Matriz - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-purple">Marketing</span>
+                        <span class="person-tag tag-accent">Digital</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 93 conexoes
+                        </div>
+                        <button class="btn-connect">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- Card 9 -->
+                <div class="person-card">
+                    <div class="person-cover secondary"></div>
+                    <div class="person-avatar-wrap">
+                        <div style="position:relative;">
+                            <div class="person-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">PS</div>
+                            <div class="person-status status-offline"></div>
+                        </div>
+                        <div class="person-actions">
+                            <button class="person-action-btn" title="Mensagem"><i class="fas fa-comment"></i></button>
+                            <button class="person-action-btn" title="Perfil"><i class="fas fa-user"></i></button>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <div class="person-name">Pedro Santos</div>
+                        <div class="person-role">Analista de RH</div>
+                        <div class="person-store"><i class="fas fa-map-marker-alt"></i> Matriz - Salvador, BA</div>
+                    </div>
+                    <div class="person-tags">
+                        <span class="person-tag tag-pink">RH</span>
+                        <span class="person-tag tag-secondary">Recrutamento</span>
+                    </div>
+                    <div class="person-footer">
+                        <div class="person-footer-left">
+                            <i class="fas fa-users"></i> 134 conexoes
+                        </div>
+                        <button class="btn-connected">Conectado</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span class="page-ellipsis">...</span>
+                <button class="page-btn">28</button>
+                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
