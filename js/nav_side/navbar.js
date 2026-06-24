@@ -9,7 +9,7 @@ const Navbar = {
     // ============================================
     config: {
         brand: {
-            logo: '/assets/images/econoweb_logo.png',
+            logo: 'assets/images/econoweb_logo.png',
             logoAlt: 'EconoWeb',
             href: 'dash.html'
         },
@@ -19,7 +19,7 @@ const Navbar = {
             { id: 'comunidade',  href: 'comunidade.html',  title: 'Comunidades',    icon: 'fas fa-users' },
             { id: 'gaming',      href: 'gaming.html',      title: 'Gamificacao',    icon: 'fas fa-trophy' }
         ],
-        userAvatar: '/assets/logoperfil/foto_eu.png',
+        userAvatar: 'assets/logoperfil/foto_eu.png',
         notificationBadge: 5
     },
 
