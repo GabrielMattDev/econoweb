@@ -84,17 +84,17 @@
                 // ============================================================
                 // LOGIN COM TABELA 'USUARIOS' EXISTENTE
                 // ============================================================
-                const usuario = await window.loginComUsername(username, password);
+                const users = await window.loginComUsername(username, password);
 
                 // Salva sessão
                 const lembrar = document.getElementById('rememberMe')?.checked || false;
-                window.salvarSessao(usuario, lembrar);
+                window.salvarSessao(users, lembrar);
 
                 // Feedback visual de sucesso
                 loginBtn.innerHTML = '<i class="fas fa-check"></i> Acesso autorizado!';
                 loginBtn.style.background = 'linear-gradient(135deg, #059669, #10B981)';
 
-                console.log('[Login] Usuário autenticado:', usuario.nome);
+                console.log('[Login] Usuário autenticado:', users.nome);
 
                 setTimeout(() => {
                     window.location.href = 'dash.html';
@@ -149,11 +149,11 @@
     // Verifica sessão existente ao carregar
     // ============================================================
     async function checkExistingSession() {
-        const usuario = window.obterUsuario();
+        const users = window.obterUsuario();
 
-        if (usuario) {
+        if (users) {
             // Verifica se sessão ainda é válida (menos de 24h)
-            const loginTime = new Date(usuario.loginTime);
+            const loginTime = new Date(users.loginTime);
             const now = new Date();
             const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
 
