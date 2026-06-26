@@ -117,7 +117,7 @@
 
         try {
             const { data, error } = await window.supabase
-                .from('usuarios')
+                .from('users')
                 .select('id, username, nome, email, setor, cargo, ativo, criado_em')
                 .eq('username', username)
                 .eq('ativo', true)
@@ -145,7 +145,7 @@
 
         try {
             const { data, error } = await window.supabase
-                .from('usuarios')
+                .from('users')
                 .select('senha')
                 .eq('username', username)
                 .eq('ativo', true)
