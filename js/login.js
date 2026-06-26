@@ -149,7 +149,7 @@
     // Verifica sessão existente ao carregar
     // ============================================================
     async function checkExistingSession() {
-        const users = window.obterUsuario();
+        const users = window.obterusers();
 
         if (users) {
             // Verifica se sessão ainda é válida (menos de 24h)
