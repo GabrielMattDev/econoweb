@@ -1,6 +1,7 @@
 // ============================================
 // 🧩 NAVBAR COMPONENT - EconoWeb Intranet
 // Injetado automaticamente em todas as páginas
+// Carrega notification.js dinamicamente
 // ============================================
 
 const Navbar = {
@@ -19,7 +20,7 @@ const Navbar = {
             { id: 'comunidade',  href: 'comunidade.html',  title: 'Comunidades',    icon: 'fas fa-users' },
             { id: 'gaming',      href: 'gaming.html',      title: 'Gamificacao',    icon: 'fas fa-trophy' }
         ],
-        userAvatar: 'assets/logoperfil/foto_eu.png',
+        userAvatar: null,  // não usa mais assets — avatar vem de perfil_dados ou iniciais
         notificationBadge: 5
     },
 
@@ -63,10 +64,151 @@ const Navbar = {
     },
 
     // ============================================
+    // BUSCAR AVATAR DO USUÁRIO LOGADO NA TABELA PERFIL_DADOS
+    // Retorna: { url: string|null, iniciais: string, cores: [string, string] }
+    // ============================================
+    async fetchUserAvatar() {
+        try {
+            const usuario = this.getUsuario();
+            if (!usuario || !usuario.username) {
+                console.log('[Navbar] ℹ️ Usuário não logado ou sem username');
+                return this.getAvatarFallback(usuario);
+            }
+
+            // Verifica se o Supabase está disponível
+            if (!window.supabase) {
+                console.warn('[Navbar] ⚠️ Supabase não disponível');
+                return this.getAvatarFallback(usuario);
+            }
+
+            const { data, error } = await window.supabase
+                .from('perfil_dados')
+                .select('foto')
+                .eq('username', usuario.username)
+                .single();
+
+            if (error) {
+                console.error('[Navbar] ❌ Erro ao buscar foto:', error.message);
+                return this.getAvatarFallback(usuario);
+            }
+
+            if (data && data.foto) {
+                console.log('[Navbar] ✅ foto encontrado:', data.foto);
+                return { url: data.foto, iniciais: null, cores: null };
+            }
+
+            return this.getAvatarFallback(usuario);
+        } catch (err) {
+            console.error('[Navbar] ❌ Erro inesperado ao buscar foto:', err);
+            return this.getAvatarFallback(this.getUsuario());
+        }
+    },
+
+    // ============================================
+    // GERAR AVATAR FALLBACK (iniciais + cor)
+    // ============================================
+    getAvatarFallback(usuario) {
+        const nome = usuario?.nome || usuario?.username || 'Usuário';
+        const iniciais = this.getIniciais(nome);
+        const cores = this.getAvatarColor(nome);
+        console.log('[Navbar] 🎨 Avatar fallback gerado:', iniciais);
+        return { url: null, iniciais, cores };
+    },
+
+    getIniciais(nome) {
+        if (!nome) return '??';
+        const parts = nome.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    },
+
+    getAvatarColor(nome) {
+        const cores = [
+            ['#2563EB', '#60A5FA'], ['#059669', '#34D399'],
+            ['#DC2626', '#F87171'], ['#7C3AED', '#A78BFA'],
+            ['#DB2777', '#F472B6'], ['#D97706', '#FBBF24'],
+            ['#0D9488', '#2DD4BF'], ['#4F46E5', '#818CF8']
+        ];
+        let hash = 0;
+        for (let i = 0; i < nome.length; i++) hash = nome.charCodeAt(i) + ((hash << 5) - hash);
+        return cores[Math.abs(hash) % cores.length];
+    },
+
+    // ============================================
+    // CARREGAR NOTIFICATION.JS DINAMICAMENTE
+    // ============================================
+    loadNotificationScript() {
+        return new Promise((resolve, reject) => {
+            // Verifica se já está carregado
+            if (window.NotificationModule) {
+                resolve();
+                return;
+            }
+
+            // Verifica se já existe um script carregando
+            const existingScript = document.querySelector('script[data-module="notification"]');
+            if (existingScript) {
+                existingScript.addEventListener('load', resolve);
+                existingScript.addEventListener('error', reject);
+                return;
+            }
+
+            // Cria e injeta o script
+            const script = document.createElement('script');
+            script.src = 'js/nav_side/notification.js';
+            script.setAttribute('data-module', 'notification');
+            script.onload = () => {
+                console.log('[Navbar] ✅ notification.js carregado');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('[Navbar] ❌ Falha ao carregar notification.js');
+                reject();
+            };
+            document.head.appendChild(script);
+        });
+    },
+
+    // ============================================
+    // CARREGAR LOGOUT.JS DINAMICAMENTE
+    // ============================================
+    loadLogoutScript() {
+        return new Promise((resolve, reject) => {
+            if (window.LogoutModule) {
+                resolve();
+                return;
+            }
+
+            const existingScript = document.querySelector('script[data-module="logout"]');
+            if (existingScript) {
+                existingScript.addEventListener('load', resolve);
+                existingScript.addEventListener('error', reject);
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'js/auth/login/logout.js';
+            script.setAttribute('data-module', 'logout');
+            script.onload = () => {
+                console.log('[Navbar] ✅ logout.js carregado');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('[Navbar] ❌ Falha ao carregar logout.js');
+                reject();
+            };
+            document.head.appendChild(script);
+        });
+    },
+
+    // ============================================
     // RENDERIZAR NAVBAR
     // ============================================
-    render() {
+    render(avatarInfo = null) {
         const currentPage = this.getCurrentPage();
+        const hasLogo = avatarInfo && avatarInfo.url;
+        const iniciais = avatarInfo?.iniciais || '??';
+        const cores = avatarInfo?.cores || ['#2563EB', '#60A5FA'];
 
         const navbarHTML = `
             <nav class="navbar" id="main-navbar">
@@ -93,7 +235,10 @@ const Navbar = {
                         <span class="badge" id="notif-badge">${this.config.notificationBadge}</span>
                     </button>
                     <div class="user-menu" id="userMenuDropdown" style="text-decoration:none;color:inherit; position: relative;">
-                        <img src="${this.config.userAvatar}" alt="Perfil" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block; cursor: pointer;" onclick="Navbar.toggleUserMenu()">
+                        ${hasLogo
+                            ? `<img src="${avatarInfo.url}" alt="Perfil" id="nav-user-avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block; cursor: pointer;" onclick="Navbar.toggleUserMenu()">`
+                            : `<div id="nav-user-avatar" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; cursor: pointer; background: linear-gradient(135deg, ${cores[0]}, ${cores[1]});" onclick="Navbar.toggleUserMenu()">${iniciais}</div>`
+                        }
                         <i class="fas fa-chevron-down" style="cursor: pointer;" onclick="Navbar.toggleUserMenu()"></i>
                         <div class="user-dropdown" id="userDropdown" style="
                             display: none;
@@ -121,15 +266,6 @@ const Navbar = {
                             " onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">
                                 <i class="fas fa-user" style="width: 20px; color: var(--primary);"></i> Meu Perfil
                             </a>
-                            <a href="perfil.html#config" style="
-                                display: flex; align-items: center; gap: 12px;
-                                padding: 12px 20px;
-                                font-size: 14px; color: var(--dark-light);
-                                text-decoration: none;
-                                transition: var(--transition);
-                            " onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-cog" style="width: 20px; color: var(--gray);"></i> Configurações
-                            </a>
                             <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
                             <button onclick="Navbar.logout()" style="
                                 display: flex; align-items: center; gap: 12px;
@@ -146,123 +282,55 @@ const Navbar = {
                     </div>
                 </div>
             </nav>
-
-            <!-- Notification Overlay -->
-            <div class="notif-overlay" id="notifOverlay" onclick="Navbar.closeNotifPopup();"></div>
-
-            <!-- Notification Popup -->
-            <div class="notification-popup" id="notifPopup">
-                <div class="notif-header">
-                    <div class="notif-header-title">
-                        <i class="fas fa-bell"></i> Notificacoes
-                    </div>
-                    <div class="notif-header-actions">
-                        <button class="notif-header-btn" onclick="Navbar.markAllRead()">
-                            <i class="fas fa-check-double"></i> Marcar todas como lidas
-                        </button>
-                    </div>
-                </div>
-                <div class="notif-tabs">
-                    <button class="notif-tab active" onclick="Navbar.switchNotifTab('all', this)">Todas</button>
-                    <button class="notif-tab" onclick="Navbar.switchNotifTab('unread', this)">
-                        Nao lidas <span class="tab-badge">5</span>
-                    </button>
-                    <button class="notif-tab" onclick="Navbar.switchNotifTab('mentions', this)">Mencoes</button>
-                </div>
-                <div class="notif-list" id="notifList">
-                    <div class="notif-item unread" data-type="like">
-                        <div class="notif-icon-wrap notif-icon-like"><i class="fas fa-thumbs-up"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text"><strong>Joao Pereira</strong> curtiu sua publicacao sobre o <strong>Programa Economart Saude</strong></div>
-                            <div class="notif-meta"><span class="notif-dot"></span><span>Ha 5 minutos</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn mark-read" title="Marcar como lida" onclick="Navbar.markRead(this)"><i class="fas fa-check"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item unread" data-type="comment">
-                        <div class="notif-icon-wrap notif-icon-comment"><i class="fas fa-comment"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text"><strong>Ana Nunes</strong> comentou em sua publicacao: <em>"Incrivel iniciativa! Ja estava precisando..."</em></div>
-                            <div class="notif-meta"><span class="notif-dot"></span><span>Ha 15 minutos</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn mark-read" title="Marcar como lida" onclick="Navbar.markRead(this)"><i class="fas fa-check"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item unread" data-type="mention">
-                        <div class="notif-icon-wrap notif-icon-mention"><i class="fas fa-at"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text"><strong>Roberto Lima</strong> mencionou voce em um comentario no post de <strong>Documentos SGQ</strong></div>
-                            <div class="notif-meta"><span class="notif-dot"></span><span>Ha 30 minutos</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn mark-read" title="Marcar como lida" onclick="Navbar.markRead(this)"><i class="fas fa-check"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item unread" data-type="event">
-                        <div class="notif-icon-wrap notif-icon-event"><i class="fas fa-calendar-alt"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text">Lembrete: <strong>Treinamento de Lideranca</strong> comeca amanha as <strong>09:00</strong></div>
-                            <div class="notif-meta"><span class="notif-dot"></span><span>Ha 1 hora</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn mark-read" title="Marcar como lida" onclick="Navbar.markRead(this)"><i class="fas fa-check"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item unread" data-type="achievement">
-                        <div class="notif-icon-wrap notif-icon-achievement"><i class="fas fa-trophy"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text">Parabens! Voce desbloqueou a conquista <strong>"Comunicador"</strong> por atingir 50+ posts no feed</div>
-                            <div class="notif-meta"><span class="notif-dot"></span><span>Ha 2 horas</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn mark-read" title="Marcar como lida" onclick="Navbar.markRead(this)"><i class="fas fa-check"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item" data-type="system">
-                        <div class="notif-icon-wrap notif-icon-system"><i class="fas fa-shield-alt"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text">Sua senha foi alterada com sucesso. Se nao foi voce, entre em contato com o TI.</div>
-                            <div class="notif-meta"><span>Ontem, 18:30</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn" title="Remover notificacao" onclick="Navbar.removeNotif(this)"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item" data-type="like">
-                        <div class="notif-icon-wrap notif-icon-like"><i class="fas fa-thumbs-up"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text"><strong>Carlos Lima</strong> e <strong>outras 12 pessoas</strong> curtiram sua foto de aniversario de empresa</div>
-                            <div class="notif-meta"><span>Ontem, 14:20</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn" title="Remover notificacao" onclick="Navbar.removeNotif(this)"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="notif-item" data-type="event">
-                        <div class="notif-icon-wrap notif-icon-event"><i class="fas fa-calendar-check"></i></div>
-                        <div class="notif-content">
-                            <div class="notif-text">Voce foi adicionado ao evento <strong>Happy Hour - 15 Anos Economart</strong></div>
-                            <div class="notif-meta"><span>Ontem, 10:00</span></div>
-                        </div>
-                        <div class="notif-actions">
-                            <button class="notif-action-btn" title="Remover notificacao" onclick="Navbar.removeNotif(this)"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="notif-empty" id="notifEmpty">
-                    <i class="fas fa-bell-slash"></i>
-                    <div class="notif-empty-text">Nenhuma notificacao por aqui</div>
-                </div>
-                <div class="notif-footer">
-                    <a href="#" onclick="Navbar.closeNotifPopup();">Ver todas as notificacoes</a>
-                </div>
-            </div>
         `;
 
-        // Insere no início do body
+        // Insere a navbar no início do body
         document.body.insertAdjacentHTML('afterbegin', navbarHTML);
+    },
+
+    // ============================================
+    // ATUALIZAR AVATAR NA NAVBAR
+    // ============================================
+    updateAvatar(avatarInfo) {
+        const avatarEl = document.getElementById('nav-user-avatar');
+        if (!avatarEl) return;
+
+        if (avatarInfo && avatarInfo.url) {
+            // Tem logo — substitui por <img>
+            const img = document.createElement('img');
+            img.src = avatarInfo.url;
+            img.alt = 'Perfil';
+            img.id = 'nav-user-avatar';
+            img.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block; cursor: pointer;';
+            img.onclick = () => Navbar.toggleUserMenu();
+            avatarEl.replaceWith(img);
+            console.log('[Navbar] 🖼️ Avatar atualizado com logo');
+        } else {
+            // Sem logo — iniciais com cor
+            const nome = this.getUserName();
+            const iniciais = avatarInfo?.iniciais || this.getIniciais(nome);
+            const cores = avatarInfo?.cores || this.getAvatarColor(nome);
+            const div = document.createElement('div');
+            div.id = 'nav-user-avatar';
+            div.style.cssText = `width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; cursor: pointer; background: linear-gradient(135deg, ${cores[0]}, ${cores[1]});`;
+            div.textContent = iniciais;
+            div.onclick = () => Navbar.toggleUserMenu();
+            avatarEl.replaceWith(div);
+            console.log('[Navbar] 🎨 Avatar atualizado com iniciais');
+        }
+    },
+
+    // ============================================
+    // RENDERIZAR POPUP DE NOTIFICAÇÕES
+    // ============================================
+    renderNotificationPopup() {
+        if (typeof NotificationModule !== 'undefined' && NotificationModule.renderPopupHTML) {
+            const popupHTML = NotificationModule.renderPopupHTML();
+            document.body.insertAdjacentHTML('beforeend', popupHTML);
+            NotificationModule.init();
+        } else {
+            console.warn('[Navbar] ⚠️ NotificationModule não disponível. Popup não renderizado.');
+        }
     },
 
     // ============================================
@@ -338,254 +406,6 @@ const Navbar = {
             }
             .user-menu:hover { background: var(--bg-hover); }
 
-            /* ===== NOTIFICATION POPUP ===== */
-            .notification-popup {
-                position: absolute;
-                top: 56px;
-                right: 80px;
-                width: 400px;
-                max-height: 520px;
-                background: var(--bg-card);
-                border-radius: var(--radius);
-                border: 1px solid var(--border);
-                box-shadow: var(--shadow-lg), 0 20px 40px rgba(0,0,0,0.15);
-                z-index: 2000;
-                opacity: 0;
-                visibility: hidden;
-                transform: translateY(-10px) scale(0.96);
-                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-            }
-            .notification-popup.active {
-                opacity: 1;
-                visibility: visible;
-                transform: translateY(0) scale(1);
-            }
-            .notification-popup::before {
-                content: '';
-                position: absolute;
-                top: -6px;
-                right: 24px;
-                width: 12px;
-                height: 12px;
-                background: var(--bg-card);
-                border-left: 1px solid var(--border);
-                border-top: 1px solid var(--border);
-                transform: rotate(45deg);
-                z-index: 1;
-            }
-            .notif-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 16px 20px;
-                border-bottom: 1px solid var(--border);
-                position: relative;
-                z-index: 2;
-                background: var(--bg-card);
-            }
-            .notif-header-title {
-                font-size: 16px;
-                font-weight: 800;
-                color: var(--dark);
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .notif-header-title i { color: var(--primary); font-size: 14px; }
-            .notif-header-actions { display: flex; gap: 8px; }
-            .notif-header-btn {
-                padding: 6px 12px;
-                background: transparent;
-                border: none;
-                border-radius: var(--radius-xs);
-                font-size: 12px;
-                font-weight: 600;
-                color: var(--primary);
-                cursor: pointer;
-                transition: var(--transition);
-                font-family: inherit;
-            }
-            .notif-header-btn:hover { background: #EFF6FF; }
-            .notif-tabs {
-                display: flex;
-                gap: 4px;
-                padding: 8px 16px;
-                border-bottom: 1px solid var(--border);
-                position: relative;
-                z-index: 2;
-                background: var(--bg-card);
-            }
-            .notif-tab {
-                padding: 6px 14px;
-                border-radius: 100px;
-                font-size: 13px;
-                font-weight: 600;
-                color: var(--gray);
-                cursor: pointer;
-                transition: var(--transition);
-                border: none;
-                background: transparent;
-                font-family: inherit;
-                position: relative;
-            }
-            .notif-tab:hover { color: var(--dark); background: var(--bg-hover); }
-            .notif-tab.active { color: var(--primary); background: #EFF6FF; }
-            .notif-tab .tab-badge {
-                position: absolute;
-                top: -2px;
-                right: -2px;
-                width: 16px;
-                height: 16px;
-                background: var(--danger);
-                color: white;
-                font-size: 9px;
-                font-weight: 700;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .notif-list {
-                overflow-y: auto;
-                max-height: 380px;
-                padding: 4px 0;
-            }
-            .notif-list::-webkit-scrollbar { width: 4px; }
-            .notif-list::-webkit-scrollbar-thumb { background: var(--gray-lighter); border-radius: 10px; }
-            .notif-item {
-                display: flex;
-                gap: 12px;
-                padding: 14px 20px;
-                cursor: pointer;
-                transition: var(--transition);
-                position: relative;
-                border-bottom: 1px solid var(--border);
-            }
-            .notif-item:last-child { border-bottom: none; }
-            .notif-item:hover { background: var(--bg-hover); }
-            .notif-item.unread { background: #F8FAFC; }
-            .notif-item.unread::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 3px;
-                height: 40px;
-                background: var(--primary);
-                border-radius: 0 3px 3px 0;
-            }
-            .notif-icon-wrap {
-                width: 40px;
-                height: 40px;
-                border-radius: var(--radius-xs);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-                flex-shrink: 0;
-            }
-            .notif-icon-like { background: #EFF6FF; color: var(--primary); }
-            .notif-icon-comment { background: #ECFDF5; color: var(--secondary); }
-            .notif-icon-mention { background: #F3E8FF; color: var(--purple); }
-            .notif-icon-event { background: #FFF7ED; color: var(--accent); }
-            .notif-icon-system { background: #FEF2F2; color: var(--danger); }
-            .notif-icon-achievement { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: var(--accent); }
-            .notif-content { flex: 1; min-width: 0; }
-            .notif-text {
-                font-size: 13px;
-                color: var(--dark);
-                line-height: 1.5;
-                margin-bottom: 4px;
-            }
-            .notif-text strong { font-weight: 700; }
-            .notif-meta {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-size: 12px;
-                color: var(--gray-light);
-            }
-            .notif-meta .notif-dot {
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-                background: var(--primary);
-                flex-shrink: 0;
-            }
-            .notif-actions {
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-                align-items: flex-end;
-                flex-shrink: 0;
-            }
-            .notif-action-btn {
-                width: 28px;
-                height: 28px;
-                border: none;
-                background: transparent;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: var(--gray-light);
-                cursor: pointer;
-                transition: var(--transition);
-                font-size: 12px;
-            }
-            .notif-action-btn:hover { background: var(--bg-hover); color: var(--primary); }
-            .notif-action-btn.mark-read:hover { color: var(--secondary); }
-            .notif-footer {
-                padding: 12px 20px;
-                border-top: 1px solid var(--border);
-                text-align: center;
-                position: relative;
-                z-index: 2;
-                background: var(--bg-card);
-            }
-            .notif-footer a {
-                font-size: 13px;
-                font-weight: 600;
-                color: var(--primary);
-                text-decoration: none;
-                transition: var(--transition);
-            }
-            .notif-footer a:hover { text-decoration: underline; }
-            .notif-empty {
-                padding: 40px 20px;
-                text-align: center;
-                display: none;
-            }
-            .notif-empty i {
-                font-size: 48px;
-                color: var(--gray-lighter);
-                margin-bottom: 12px;
-            }
-            .notif-empty-text {
-                font-size: 14px;
-                color: var(--gray-light);
-                font-weight: 500;
-            }
-
-            /* Overlay */
-            .notif-overlay {
-                position: fixed;
-                inset: 0;
-                z-index: 1999;
-                display: none;
-                pointer-events: none;
-            }
-            .notif-overlay.active { display: block; }
-
-            body.notif-open {
-                overflow: hidden;
-                padding-right: 6px;
-            }
-
             /* ===== RESPONSIVO ===== */
             @media (max-width: 1200px) {
                 .search-box { width: 260px; }
@@ -597,21 +417,6 @@ const Navbar = {
             @media (max-width: 600px) {
                 .navbar { padding: 0 12px; }
                 .search-box { display: none; }
-                .notification-popup {
-                    position: fixed;
-                    top: auto;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    width: 100%;
-                    max-height: 70vh;
-                    border-radius: var(--radius) var(--radius) 0 0;
-                    transform: translateY(100%);
-                }
-                .notification-popup.active {
-                    transform: translateY(0);
-                }
-                .notification-popup::before { display: none; }
             }
         `;
 
@@ -627,31 +432,34 @@ const Navbar = {
     bindEvents() {
         // Notificações toggle
         const notifBtn = document.getElementById('notif-toggle-btn');
-        const notifPopup = document.getElementById('notifPopup');
-        const notifOverlay = document.getElementById('notifOverlay');
 
         if (notifBtn) {
             notifBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const isActive = notifPopup?.classList.contains('active');
-                if (isActive) {
-                    this.closeNotifPopup();
-                } else {
-                    this.openNotifPopup();
+                if (window.NotificationModule) {
+                    window.NotificationModule.togglePopup();
                 }
             });
         }
 
         // Fecha notificações ao clicar fora
         document.addEventListener('click', (e) => {
+            const notifPopup = document.getElementById('notifPopup');
+            const notifBtn = document.getElementById('notif-toggle-btn');
             if (notifPopup && !notifPopup.contains(e.target) && !notifBtn?.contains(e.target)) {
-                this.closeNotifPopup();
+                if (window.NotificationModule) {
+                    window.NotificationModule.closePopup();
+                }
             }
         });
 
         // Escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.closeNotifPopup();
+            if (e.key === 'Escape') {
+                if (window.NotificationModule) {
+                    window.NotificationModule.closePopup();
+                }
+            }
         });
 
         // Fecha dropdown ao clicar fora
@@ -660,99 +468,6 @@ const Navbar = {
             const dropdown = document.getElementById('userDropdown');
             if (menu && dropdown && !menu.contains(e.target)) {
                 dropdown.style.display = 'none';
-            }
-        });
-    },
-
-    // ============================================
-    // NOTIFICAÇÕES
-    // ============================================
-    openNotifPopup() {
-        document.getElementById('notifPopup')?.classList.add('active');
-        document.getElementById('notifOverlay')?.classList.add('active');
-        document.body.classList.add('notif-open');
-        // Fecha dropdown do usuário
-        const dropdown = document.getElementById('userDropdown');
-        if (dropdown) dropdown.style.display = 'none';
-    },
-
-    closeNotifPopup() {
-        document.getElementById('notifPopup')?.classList.remove('active');
-        document.getElementById('notifOverlay')?.classList.remove('active');
-        document.body.classList.remove('notif-open');
-    },
-
-    markRead(btn) {
-        const item = btn.closest('.notif-item');
-        item.classList.remove('unread');
-        const dot = item.querySelector('.notif-dot');
-        if (dot) dot.remove();
-        btn.remove();
-        this.updateBadge();
-    },
-
-    markAllRead() {
-        document.querySelectorAll('.notif-item.unread').forEach(item => {
-            item.classList.remove('unread');
-            const dot = item.querySelector('.notif-dot');
-            if (dot) dot.remove();
-            const btn = item.querySelector('.mark-read');
-            if (btn) btn.remove();
-        });
-        this.updateBadge();
-    },
-
-    removeNotif(btn) {
-        const item = btn.closest('.notif-item');
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(20px)';
-        setTimeout(() => {
-            item.remove();
-            this.checkEmpty();
-        }, 200);
-    },
-
-    checkEmpty() {
-        const items = document.querySelectorAll('.notif-item');
-        const emptyState = document.getElementById('notifEmpty');
-        if (emptyState) {
-            emptyState.style.display = items.length === 0 ? 'block' : 'none';
-        }
-    },
-
-    updateBadge() {
-        const unreadCount = document.querySelectorAll('.notif-item.unread').length;
-        const badge = document.getElementById('notif-badge');
-        if (badge) {
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-        const tabBadge = document.querySelector('.notif-tab .tab-badge');
-        if (tabBadge) {
-            if (unreadCount > 0) {
-                tabBadge.textContent = unreadCount;
-                tabBadge.style.display = 'flex';
-            } else {
-                tabBadge.style.display = 'none';
-            }
-        }
-    },
-
-    switchNotifTab(tab, btn) {
-        document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-
-        document.querySelectorAll('.notif-item').forEach(item => {
-            if (tab === 'all') {
-                item.style.display = 'flex';
-            } else if (tab === 'unread') {
-                item.style.display = item.classList.contains('unread') ? 'flex' : 'none';
-            } else if (tab === 'mentions') {
-                item.style.display = item.dataset.type === 'mention' ? 'flex' : 'none';
             }
         });
     },
@@ -767,7 +482,9 @@ const Navbar = {
         const isVisible = dropdown.style.display === 'block';
 
         // Fecha notificações
-        this.closeNotifPopup();
+        if (window.NotificationModule) {
+            window.NotificationModule.closePopup();
+        }
 
         dropdown.style.display = isVisible ? 'none' : 'block';
 
@@ -780,15 +497,20 @@ const Navbar = {
     },
 
     // ============================================
-    // LOGOUT
+    // LOGOUT — delega para LogoutModule
     // ============================================
     logout() {
-        if (confirm('Deseja realmente sair?')) {
-            if (typeof window.encerrarSessao === 'function') {
-                window.encerrarSessao();
-            } else {
-                sessionStorage.removeItem('econoweb_usuario');
-                window.location.replace('login.html');
+        if (window.LogoutModule && window.LogoutModule.openModal) {
+            window.LogoutModule.openModal();
+        } else {
+            // Fallback caso logout.js não carregue
+            if (confirm('Deseja realmente sair?')) {
+                if (typeof window.encerrarSessao === 'function') {
+                    window.encerrarSessao();
+                } else {
+                    sessionStorage.removeItem('econoweb_usuario');
+                    window.location.replace('login.html');
+                }
             }
         }
     },
@@ -810,7 +532,34 @@ const Navbar = {
         }
 
         this.injectStyles();
-        this.render();
+
+        // Busca avatar do usuário logado no Supabase
+        let avatarInfo = null;
+        try {
+            avatarInfo = await this.fetchUserAvatar();
+        } catch (err) {
+            console.warn('[Navbar] ⚠️ Não foi possível buscar avatar:', err);
+            avatarInfo = this.getAvatarFallback(this.getUsuario());
+        }
+
+        // Renderiza navbar com avatar (logo ou iniciais)
+        this.render(avatarInfo);
+
+        // Carrega notification.js e renderiza o popup
+        try {
+            await this.loadNotificationScript();
+            this.renderNotificationPopup();
+        } catch (err) {
+            console.warn('[Navbar] ⚠️ Não foi possível carregar notificações:', err);
+        }
+
+        // Carrega logout.js
+        try {
+            await this.loadLogoutScript();
+        } catch (err) {
+            console.warn('[Navbar] ⚠️ Não foi possível carregar logout:', err);
+        }
+
         this.bindEvents();
         console.log('✅ Navbar EconoWeb inicializado');
     }

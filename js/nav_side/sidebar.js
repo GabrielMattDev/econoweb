@@ -45,35 +45,40 @@ const Sidebar = {
             iconClass: "fas fa-home",
             iconBg: "#EFF6FF",
             iconColor: "var(--primary)",
-            label: "Feed Principal"
+            label: "Feed Principal",
+            nivel: 2  // acessível a todos (operador e admin)
         },
         {
             href: "pessoas.html",
             iconClass: "fas fa-user-friends",
             iconBg: "#ECFDF5",
             iconColor: "var(--secondary)",
-            label: "Pessoas"
+            label: "Pessoas",
+            nivel: 2
         },
         {
             href: "comunidade.html",
             iconClass: "fas fa-users-cog",
             iconBg: "#F3E8FF",
             iconColor: "var(--purple)",
-            label: "Comunidades"
+            label: "Comunidades",
+            nivel: 2
         },
         {
             href: "eventos.html",
             iconClass: "fas fa-calendar-alt",
             iconBg: "#FFF7ED",
             iconColor: "var(--accent)",
-            label: "Eventos"
+            label: "Eventos",
+            nivel: 2
         },
         {
             href: "salvos.html",
             iconClass: "fas fa-bookmark",
             iconBg: "#FEF2F2",
             iconColor: "var(--danger)",
-            label: "Salvos"
+            label: "Salvos",
+            nivel: 2
         },
         // Separador antes dos links externos
         { divider: true },
@@ -82,7 +87,8 @@ const Sidebar = {
             iconClass: "fas fa-calendar-check",
             iconBg: "#F0FDFA",
             iconColor: "#0D9488",
-            label: "Reserva de Salas"
+            label: "Reserva de Salas",
+            nivel: 2
         },
         {
             href: "http://colheitafeliz.online/",
@@ -90,7 +96,8 @@ const Sidebar = {
             iconBg: "#F0FDFA",
             iconColor: "#0D9488",
             label: "Documentos SQJ",
-            target: "_blank"
+            target: "_blank",
+            nivel: 2
         },
         {
             href: "https://forms.office.com/pages/responsepage.aspx?id=4dxszmyXAUmtLNKzf5MFeOU_VoEW2MJCleyBns7E4OdUMTZWVDFVSTdGRkpQVFhSVDI5RklOV09VUS4u&origin=QRCode&qrcodeorigin=presentation&route=shorturl",
@@ -98,7 +105,8 @@ const Sidebar = {
             iconBg: "#FDF2F8",
             iconColor: "var(--pink)",
             label: "Canal de Atendimento",
-            target: "_blank"
+            target: "_blank",
+            nivel: 2
         },
         {
             href: "https://meurh.foxconn.com.br/web/app/RH/PortalMeuRH/#/login",
@@ -106,7 +114,19 @@ const Sidebar = {
             iconBg: "#FDF2F8",
             iconColor: "var(--pink)",
             label: "Meu RH",
-            target: "_blank"
+            target: "_blank",
+            nivel: 2
+        },
+        // Separador antes do menu admin
+        { divider: true },
+        // Item exclusivo de administrador
+        {
+            href: "auditoria.html",
+            iconClass: "fas fa-shield-alt",
+            iconBg: "#FEF2F2",
+            iconColor: "#DC2626",
+            label: "Auditoria",
+            nivel: 1  // apenas administradores
         }
     ],
 
@@ -126,14 +146,80 @@ const Sidebar = {
     },
 
     // ============================================
+    // CARREGAR PERMISSAO.JS DINAMICAMENTE
+    // ============================================
+    loadPermissaoScript() {
+        return new Promise((resolve, reject) => {
+            if (window.PermissaoModule) {
+                resolve();
+                return;
+            }
+
+            const existingScript = document.querySelector('script[data-module="permissao"]');
+            if (existingScript) {
+                existingScript.addEventListener('load', resolve);
+                existingScript.addEventListener('error', reject);
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'js/modules/perm/permissao.js';
+            script.setAttribute('data-module', 'permissao');
+            script.onload = () => {
+                console.log('[Sidebar] ✅ permissao.js carregado');
+                resolve();
+            };
+            script.onerror = () => {
+                console.error('[Sidebar] ❌ Falha ao carregar permissao.js');
+                reject();
+            };
+            document.head.appendChild(script);
+        });
+    },
+
+    // ============================================
+    // VERIFICAR PERMISSÃO DO USUÁRIO LOGADO
+    // ============================================
+    async verificarPermissao() {
+        try {
+            await this.loadPermissaoScript();
+        } catch (err) {
+            console.warn('[Sidebar] ⚠️ Não foi possível carregar permissao.js');
+        }
+
+        if (!window.PermissaoModule) {
+            console.warn('[Sidebar] ⚠️ PermissaoModule não disponível, mostrando todos os itens');
+            return { nivel: 2 }; // fallback: mostra tudo
+        }
+        return await PermissaoModule.init();
+    },
+
+    // ============================================
+    // FILTRAR ITENS POR PERMISSÃO
+    // ============================================
+    filtrarItens(permissao) {
+        const nivelUsuario = permissao?.nivel || 2;
+        return this.menuItems.filter(item => {
+            if (item.divider) return true;
+            const nivelItem = item.nivel || 2;
+            // Admin (nivel 1) vê tudo, Operador (nivel 2) vê apenas nivel 2
+            return nivelUsuario <= nivelItem;
+        });
+    },
+
+    // ============================================
     // RENDERIZAR SIDEBAR
     // ============================================
-    render() {
+    async render() {
         const currentPage = this.getCurrentPage();
+
+        // Verifica permissão e filtra itens
+        const permissao = await this.verificarPermissao();
+        const itensVisiveis = this.filtrarItens(permissao);
 
         // Montar os itens do menu
         let menuItemsHTML = '';
-        this.menuItems.forEach(item => {
+        itensVisiveis.forEach(item => {
             if (item.divider) {
                 menuItemsHTML += '<div class="menu-divider"></div>\n';
             } else {
@@ -178,7 +264,7 @@ ${menuItemsHTML}
                 return;
             }
         }
-        this.render();
+        await this.render();
     }
 };
 

@@ -51,10 +51,10 @@
     };
 
     // ============================================================
-    // FUNÇÃO: salvarSessao(usuario, usarLocalStorage)
-    // Salva os dados do usuário no storage
+    // FUNÇÃO: salvarSessao(usuario, usarLocalStorage, permissao)
+    // Salva os dados do usuário e permissão no storage
     // ============================================================
-    window.salvarSessao = function(usuario, usarLocalStorage) {
+    window.salvarSessao = function(usuario, usarLocalStorage, permissao) {
         if (!usuario || !usuario.id) {
             console.error('[Auth] Tentativa de salvar sessão inválida');
             return false;
@@ -64,12 +64,70 @@
 
         if (usarLocalStorage) {
             localStorage.setItem(SESSION_KEY, usuarioJSON);
+            if (permissao) {
+                localStorage.setItem('econoweb_permissao', JSON.stringify(permissao));
+            }
         } else {
             sessionStorage.setItem(SESSION_KEY, usuarioJSON);
+            if (permissao) {
+                sessionStorage.setItem('econoweb_permissao', JSON.stringify(permissao));
+            }
         }
 
-        console.log('[Auth] Sessão salva para:', usuario.nome || usuario.username);
+        console.log('[Auth] Sessão salva para:', usuario.nome || usuario.username, 
+                    permissao ? '(nível ' + permissao.nivel + ')' : '');
         return true;
+    };
+
+    // ============================================================
+    // FUNÇÃO: obterPermissao()
+    // Retorna a permissão salva do usuário logado
+    // ============================================================
+    window.obterPermissao = function() {
+        let permissaoRaw = sessionStorage.getItem('econoweb_permissao');
+        if (!permissaoRaw) {
+            permissaoRaw = localStorage.getItem('econoweb_permissao');
+        }
+
+        if (!permissaoRaw) return null;
+
+        try {
+            return JSON.parse(permissaoRaw);
+        } catch (e) {
+            console.error('[Auth] Erro ao parsear permissão:', e);
+            return null;
+        }
+    };
+
+    // ============================================================
+    // FUNÇÃO: buscarPermissaoUsuario(username)
+    // Busca o nível de permissão na tabela grupo
+    // Retorna: { nivel: 1|2 } ou null
+    // ============================================================
+    window.buscarPermissaoUsuario = async function(username) {
+        if (!window.supabase || !username) {
+            console.warn('[Auth] Supabase ou username não disponível para buscar permissão');
+            return null;
+        }
+
+        try {
+            const { data, error } = await window.supabase
+                .from('grupo')
+                .select('nivel')
+                .eq('username', username)
+                .single();
+
+            if (error) {
+                console.warn('[Auth] Erro ao buscar permissão:', error.message);
+                return null;
+            }
+
+            console.log('[Auth] ✅ Permissão encontrada:', username, '→ nível', data?.nivel);
+            return data;
+        } catch (err) {
+            console.error('[Auth] Exceção ao buscar permissão:', err);
+            return null;
+        }
     };
 
     // ============================================================
@@ -93,9 +151,11 @@
         sessionStorage.removeItem(SESSION_KEY);
         sessionStorage.removeItem(TOKEN_KEY);
         sessionStorage.removeItem(REFRESH_KEY);
+        sessionStorage.removeItem('econoweb_permissao');
         localStorage.removeItem(SESSION_KEY);
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(REFRESH_KEY);
+        localStorage.removeItem('econoweb_permissao');
 
         // 3. Limpa tokens do Supabase
         localStorage.removeItem('sb-econoweb-auth-token');
