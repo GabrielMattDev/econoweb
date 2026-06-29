@@ -3,499 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Economart Connect - Gamificacao</title>
+    <title>EconoCoins</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --primary: #1E40AF; --primary-light: #3B82F6; --primary-dark: #1E3A8A;
-            --secondary: #059669; --accent: #EA580C; --danger: #DC2626;
-            --purple: #7C3AED; --pink: #DB2777; --gold: #F59E0B; --silver: #94A3B8;
-            --bronze: #B45309; --dark: #0F172A; --dark-light: #1E293B;
-            --gray: #64748B; --gray-light: #94A3B8; --gray-lighter: #CBD5E1;
-            --bg: #F8FAFC; --bg-card: #FFFFFF; --bg-hover: #F1F5F9; --border: #E2E8F0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --radius: 16px; --radius-sm: 12px; --radius-xs: 8px;
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg); color: var(--dark); line-height: 1.5; overflow-x: hidden;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--gray-lighter); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gray-light); }
-
-        /* NAVBAR */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0; height: 64px;
-            background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border); z-index: 1000;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
-        }
-        .nav-left { display: flex; align-items: center; gap: 24px; }
-        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .logo-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: var(--radius-xs);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 20px; font-weight: 800;
-        }
-        .logo-text { font-size: 22px; font-weight: 900; color: var(--dark); letter-spacing: -0.8px; }
-        .logo-text span { color: var(--primary); }
-        .search-box { position: relative; width: 360px; }
-        .search-box input {
-            width: 100%; padding: 10px 16px 10px 42px;
-            border: 1.5px solid var(--border); border-radius: 100px;
-            background: var(--bg); font-size: 14px; font-family: inherit;
-            transition: var(--transition); outline: none;
-        }
-        .search-box input:focus {
-            border-color: var(--primary-light); background: white;
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
-        }
-        .search-box i {
-            position: absolute; left: 16px; top: 50%;
-            transform: translateY(-50%); color: var(--gray-light); font-size: 14px;
-        }
-        .nav-center { display: flex; align-items: center; gap: 4px; }
-        .nav-tab {
-            display: flex; align-items: center; justify-content: center;
-            width: 110px; height: 48px; border-radius: var(--radius-xs);
-            cursor: pointer; color: var(--gray); font-size: 20px;
-            position: relative; transition: var(--transition); text-decoration: none;
-        }
-        .nav-tab:hover { background: var(--bg-hover); color: var(--primary); }
-        .nav-tab.active { color: var(--primary); }
-        .nav-tab.active::after {
-            content: ''; position: absolute; bottom: -8px; left: 50%;
-            transform: translateX(-50%); width: 60px; height: 3px;
-            background: var(--primary); border-radius: 3px;
-        }
-        .nav-tab .badge {
-            position: absolute; top: 6px; right: 24px;
-            width: 18px; height: 18px; background: var(--accent);
-            color: white; font-size: 10px; font-weight: 700;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        }
-        .nav-right { display: flex; align-items: center; gap: 12px; }
-        .nav-btn {
-            width: 40px; height: 40px; border: none; background: var(--bg);
-            border-radius: 50%; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; color: var(--dark);
-            font-size: 18px; position: relative; transition: var(--transition);
-        }
-        .nav-btn:hover { background: var(--bg-hover); }
-        .nav-btn .badge {
-            position: absolute; top: -2px; right: -2px;
-            width: 18px; height: 18px; background: var(--danger);
-            color: white; font-size: 10px; font-weight: 700;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            border: 2px solid white;
-        }
-        .user-menu {
-            display: flex; align-items: center; gap: 10px;
-            padding: 4px 4px 4px 12px; border-radius: 100px;
-            cursor: pointer; transition: var(--transition); margin-left: 8px;
-        }
-        .user-menu:hover { background: var(--bg-hover); }
-        .user-avatar {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--secondary), #10B981);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 13px;
-        }
-        .user-menu i { color: var(--gray); font-size: 12px; }
-
-        /* GAMIFICATION HERO */
-        .gamification-hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--purple) 100%);
-            border-radius: var(--radius);
-            padding: 40px 48px;
-            margin-bottom: 32px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .gamification-hero::before {
-            content: ''; position: absolute; top: -50%; right: -10%;
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .hero-content {
-            position: relative; z-index: 1;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .hero-left { max-width: 60%; }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 16px; background: rgba(255,255,255,0.2);
-            border-radius: 100px; font-size: 13px; font-weight: 600;
-            margin-bottom: 16px; backdrop-filter: blur(10px);
-        }
-        .hero-title {
-            font-size: 36px; font-weight: 900; letter-spacing: -1px;
-            margin-bottom: 12px; line-height: 1.2;
-        }
-        .hero-subtitle {
-            font-size: 16px; opacity: 0.9; line-height: 1.6;
-        }
-        .hero-coins {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 8px;
-        }
-        .coin-display {
-            width: 120px; height: 120px;
-            background: linear-gradient(135deg, #FCD34D, #F59E0B, #D97706);
-            border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.4);
-            border: 4px solid rgba(255,255,255,0.3);
-            position: relative;
-        }
-        .coin-display::after {
-            content: ''; position: absolute; inset: -8px;
-            border-radius: 50%;
-            border: 2px dashed rgba(255,255,255,0.3);
-            animation: spin 20s linear infinite;
-        }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .coin-icon { font-size: 36px; color: white; margin-bottom: 2px; }
-        .coin-amount { font-size: 28px; font-weight: 900; color: white; }
-        .coin-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); }
-
-        /* MAIN LAYOUT */
-        .main-layout {
-            display: grid; grid-template-columns: 1fr 380px;
-            gap: 24px; max-width: 1200px; margin: 0 auto;
-            padding: 88px 24px 40px;
-        }
-
-        /* SECTION TITLES */
-        .section-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .section-title {
-            font-size: 20px; font-weight: 800; color: var(--dark);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .section-title i { color: var(--primary); font-size: 18px; }
-        .section-subtitle { font-size: 14px; color: var(--gray); margin-top: 4px; }
-
-        /* MISSIONS */
-        .missions-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 16px; margin-bottom: 32px;
-        }
-        .mission-card {
-            background: var(--bg-card); border-radius: var(--radius);
-            border: 1px solid var(--border); padding: 20px;
-            transition: var(--transition); position: relative; overflow: hidden;
-        }
-        .mission-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .mission-card.completed { border-color: var(--secondary); background: #F0FDF4; }
-        .mission-card.completed .mission-status { background: var(--secondary); color: white; }
-        .mission-header {
-            display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
-        }
-        .mission-icon {
-            width: 48px; height: 48px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; flex-shrink: 0;
-        }
-        .mi-like { background: #EFF6FF; color: var(--primary); }
-        .mi-comment { background: #F0FDFA; color: #0D9488; }
-        .mi-time { background: #FFF7ED; color: var(--accent); }
-        .mi-share { background: #F3E8FF; color: var(--purple); }
-        .mi-post { background: #FDF2F8; color: var(--pink); }
-        .mi-streak { background: #FEF2F2; color: var(--danger); }
-        .mission-info { flex: 1; }
-        .mission-title { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-        .mission-desc { font-size: 13px; color: var(--gray); line-height: 1.5; }
-        .mission-reward {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 14px; font-weight: 700; color: var(--gold);
-        }
-        .mission-reward i { font-size: 16px; }
-        .mission-progress {
-            margin-top: 14px;
-        }
-        .progress-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 8px; font-size: 13px;
-        }
-        .progress-text { color: var(--gray); font-weight: 500; }
-        .progress-value { color: var(--dark); font-weight: 700; }
-        .progress-bar {
-            width: 100%; height: 8px; background: var(--bg-hover);
-            border-radius: 100px; overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%; border-radius: 100px;
-            background: linear-gradient(90deg, var(--primary-light), var(--primary));
-            transition: width 0.6s ease;
-        }
-        .progress-fill.complete { background: linear-gradient(90deg, var(--secondary), #10B981); }
-        .mission-status {
-            position: absolute; top: 16px; right: 16px;
-            padding: 4px 12px; border-radius: 100px;
-            font-size: 11px; font-weight: 700; text-transform: uppercase;
-            background: var(--bg-hover); color: var(--gray);
-        }
-        .mission-status.done { background: var(--secondary); color: white; }
-
-        /* ACHIEVEMENTS */
-        .achievements-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 16px; margin-bottom: 32px;
-        }
-        .achievement-card {
-            background: var(--bg-card); border-radius: var(--radius);
-            border: 1px solid var(--border); padding: 24px 16px;
-            text-align: center; transition: var(--transition);
-            cursor: pointer;
-        }
-        .achievement-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-        .achievement-card.locked { opacity: 0.5; }
-        .achievement-card.locked .achievement-icon { filter: grayscale(1); }
-        .achievement-icon {
-            width: 64px; height: 64px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; margin: 0 auto 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        .ach-gold { background: linear-gradient(135deg, #FCD34D, #F59E0B); color: white; }
-        .ach-silver { background: linear-gradient(135deg, #E2E8F0, #94A3B8); color: white; }
-        .ach-bronze { background: linear-gradient(135deg, #D97706, #B45309); color: white; }
-        .ach-purple { background: linear-gradient(135deg, #A78BFA, #7C3AED); color: white; }
-        .ach-green { background: linear-gradient(135deg, #6EE7B7, #059669); color: white; }
-        .ach-red { background: linear-gradient(135deg, #FCA5A5, #DC2626); color: white; }
-        .ach-blue { background: linear-gradient(135deg, #93C5FD, #3B82F6); color: white; }
-        .ach-pink { background: linear-gradient(135deg, #F9A8D4, #DB2777); color: white; }
-        .achievement-name { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-        .achievement-desc { font-size: 12px; color: var(--gray); }
-        .achievement-date {
-            font-size: 11px; color: var(--gray-light); margin-top: 8px;
-            font-weight: 500;
-        }
-
-        /* RANKING */
-        .ranking-card {
-            background: var(--bg-card); border-radius: var(--radius);
-            border: 1px solid var(--border); overflow: hidden;
-            margin-bottom: 24px;
-        }
-        .ranking-header {
-            padding: 20px 24px; border-bottom: 1px solid var(--border);
-            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        }
-        .ranking-title {
-            font-size: 18px; font-weight: 800; color: var(--dark);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .ranking-title i { color: var(--gold); font-size: 20px; }
-        .ranking-subtitle { font-size: 13px; color: var(--gray); margin-top: 4px; }
-
-        .ranking-list { padding: 8px 0; }
-        .ranking-item {
-            display: flex; align-items: center; gap: 14px;
-            padding: 12px 20px; transition: var(--transition);
-            cursor: pointer;
-        }
-        .ranking-item:hover { background: var(--bg-hover); }
-        .ranking-item.current-user { background: #EFF6FF; border-left: 3px solid var(--primary); }
-        .rank-number {
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 800; flex-shrink: 0;
-        }
-        .rank-1 { background: linear-gradient(135deg, #FCD34D, #F59E0B); color: white; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
-        .rank-2 { background: linear-gradient(135deg, #E2E8F0, #94A3B8); color: white; box-shadow: 0 4px 12px rgba(148,163,184,0.3); }
-        .rank-3 { background: linear-gradient(135deg, #D97706, #B45309); color: white; box-shadow: 0 4px 12px rgba(180,83,9,0.3); }
-        .rank-other { background: var(--bg-hover); color: var(--gray); }
-        .rank-avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 13px; flex-shrink: 0;
-        }
-        .rank-info { flex: 1; min-width: 0; }
-        .rank-name { font-size: 14px; font-weight: 700; color: var(--dark); }
-        .rank-role { font-size: 12px; color: var(--gray); }
-        .rank-coins {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 16px; font-weight: 800; color: var(--gold);
-        }
-        .rank-coins i { font-size: 18px; }
-        .rank-trend {
-            font-size: 11px; font-weight: 600;
-            padding: 2px 8px; border-radius: 100px;
-        }
-        .trend-up { background: #ECFDF5; color: var(--secondary); }
-        .trend-down { background: #FEF2F2; color: var(--danger); }
-        .trend-same { background: var(--bg-hover); color: var(--gray); }
-
-        /* USER STATS */
-        .user-stats {
-            background: var(--bg-card); border-radius: var(--radius);
-            border: 1px solid var(--border); padding: 24px;
-            margin-bottom: 24px;
-        }
-        .stats-header {
-            display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
-        }
-        .stats-avatar {
-            width: 64px; height: 64px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 24px;
-            background: linear-gradient(135deg, var(--secondary), #10B981);
-        }
-        .stats-info { flex: 1; }
-        .stats-name { font-size: 18px; font-weight: 800; color: var(--dark); }
-        .stats-rank {
-            font-size: 14px; color: var(--gray); display: flex; align-items: center; gap: 6px;
-        }
-        .stats-rank i { color: var(--gold); }
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-        }
-        .stat-item {
-            text-align: center; padding: 16px;
-            background: var(--bg); border-radius: var(--radius-sm);
-            transition: var(--transition);
-        }
-        .stat-item:hover { background: var(--bg-hover); }
-        .stat-value {
-            font-size: 24px; font-weight: 800; color: var(--dark);
-            margin-bottom: 4px;
-        }
-        .stat-value.gold { color: var(--gold); }
-        .stat-value.purple { color: var(--purple); }
-        .stat-value.blue { color: var(--primary); }
-        .stat-label { font-size: 12px; color: var(--gray); font-weight: 500; }
-
-        /* LEVEL BADGE */
-        .level-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 8px 20px; background: linear-gradient(135deg, var(--primary), var(--purple));
-            color: white; border-radius: 100px; font-size: 14px; font-weight: 700;
-            margin-bottom: 24px;
-        }
-        .level-badge i { font-size: 16px; }
-
-        /* STREAK */
-        .streak-widget {
-            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-            border-radius: var(--radius); padding: 20px;
-            margin-bottom: 24px; border: 1px solid #FCD34D;
-        }
-        .streak-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        .streak-title {
-            font-size: 16px; font-weight: 800; color: var(--dark);
-            display: flex; align-items: center; gap: 8px;
-        }
-        .streak-title i { color: var(--accent); font-size: 20px; }
-        .streak-days {
-            font-size: 28px; font-weight: 900; color: var(--accent);
-        }
-        .streak-days span { font-size: 14px; font-weight: 600; color: var(--gray); }
-        .streak-bar {
-            display: flex; gap: 6px; margin-top: 12px;
-        }
-        .streak-day {
-            flex: 1; height: 40px; border-radius: var(--radius-xs);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 600; gap: 2px;
-        }
-        .streak-day.done { background: var(--secondary); color: white; }
-        .streak-day.missed { background: #FEE2E2; color: var(--danger); }
-        .streak-day.future { background: var(--bg-hover); color: var(--gray-light); }
-        .streak-day i { font-size: 14px; }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .hero-content { flex-direction: column; text-align: center; gap: 24px; }
-            .hero-left { max-width: 100%; }
-            .hero-title { font-size: 28px; }
-            .missions-grid { grid-template-columns: 1fr; }
-            .achievements-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .gamification-hero { padding: 24px; }
-            .hero-title { font-size: 24px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .achievements-grid { grid-template-columns: repeat(2, 1fr); }
-            .search-box { display: none; }
-            .nav-center { display: none; }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .mission-card, .achievement-card, .ranking-item, .stat-item {
-            animation: fadeInUp 0.5s ease forwards;
-        }
-    </style>
+    <link rel="stylesheet" href="css/geral.css">
+    <link rel="stylesheet" href="css/modules/gaming.css">
 
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-left">
-            <a href="#" class="logo">
-                <div class="logo-icon"><i class="fas fa-network-wired"></i></div>
-                <div class="logo-text">Econom<span>Connect</span></div>
-            </a>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Pesquisar pessoas, comunidades, posts...">
-            </div>
-        </div>
-                <div class="nav-center">
-            <a href="dash.html" class="nav-tab" title="Feed Principal"><i class="fas fa-home"></i></a>
-            <a href="comunidade.html" class="nav-tab" title="Comunidades"><i class="fas fa-users"></i></a>
-            <a href="msm.html" class="nav-tab" title="Mensagens"><i class="fas fa-comment-dots"></i><span class="badge">3</span></a>
-            <a href="gaming.html" class="nav-tab active" title="Gamificacao"><i class="fas fa-trophy"></i></a>
-            <a href="eventos.html" class="nav-tab" title="Eventos"><i class="fas fa-calendar-star"></i></a>
-        </div>
-        <div class="nav-right">
-            <button class="nav-btn" title="Criar"><i class="fas fa-plus"></i></button>
-            <a href="msm.html" style="text-decoration:none;"><<button class="nav-btn" title="Mensagens"><i class="fas fa-comment-dots"></i></a><span class="badge">3</span></button>
-            <button class="nav-btn" title="Notificacoes"><i class="fas fa-bell"></i><span class="badge">5</span></button>
-            <div class="user-menu">
-                <div class="user-avatar">MS</div>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </div>
-    </nav>
+    <!-- Navbar e Sidebar sao injetados automaticamente pelos scripts -->
 
     <div class="main-layout">
-        <div class="main-content">
+
+        <!-- LEFT SIDEBAR: injetado pelo sidebar.js -->
+
+        <!-- CENTER CONTENT -->
+        <main class="center-feed">
 
             <!-- HERO -->
             <div class="gamification-hero">
                 <div class="hero-content">
                     <div class="hero-left">
-                        <div class="hero-badge"><i class="fas fa-star"></i> Nivel 5 - Colaborador Destaque</div>
+                        <div class="hero-badge"><i class="fas fa-star"></i> <span id="hero-nivel">Nivel 5 - Colaborador Destaque</span></div>
                         <h1 class="hero-title">Gamificacao Economart</h1>
                         <p class="hero-subtitle">Complete missoes, interaja com a intranet e acumule EconoCoins. Quanto mais voce participa, mais voce ganha! Suba no ranking e desbloqueie conquistas exclusivas.</p>
                     </div>
                     <div class="hero-coins">
                         <div class="coin-display">
                             <i class="fas fa-coins coin-icon"></i>
-                            <span class="coin-amount">2.450</span>
+                            <span class="coin-amount" id="hero-coins">2.450</span>
                         </div>
                         <span class="coin-label">EconoCoins</span>
                     </div>
@@ -506,7 +43,10 @@
             <div class="streak-widget">
                 <div class="streak-header">
                     <div class="streak-title"><i class="fas fa-fire"></i> Sequencia de Acesso</div>
-                    <div class="streak-days">12 <span>dias consecutivos</span></div>
+                    <div class="streak-days">
+                        <span class="streak-number" id="streak-dias">12</span>
+                        <span class="streak-label">dias consecutivos</span>
+                    </div>
                 </div>
                 <div class="streak-bar">
                     <div class="streak-day done"><i class="fas fa-check"></i> Seg</div>
@@ -520,7 +60,7 @@
             </div>
 
             <!-- MISSIONS -->
-            <div class="section-header">
+            <div class="section-header" id="missoes">
                 <div>
                     <div class="section-title"><i class="fas fa-bullseye"></i> Missoes do Dia</div>
                     <div class="section-subtitle">Complete as missoes para ganhar EconoCoins</div>
@@ -645,7 +185,7 @@
             </div>
 
             <!-- ACHIEVEMENTS -->
-            <div class="section-header">
+            <div class="section-header" id="conquistas">
                 <div>
                     <div class="section-title"><i class="fas fa-medal"></i> Conquistas</div>
                     <div class="section-subtitle">Desbloqueie badges exclusivos ao completar desafios</div>
@@ -703,40 +243,41 @@
                     <div class="achievement-date">Bloqueado</div>
                 </div>
             </div>
-        </div>
+        </main>
 
+        <!-- RIGHT SIDEBAR -->
         <aside class="right-sidebar">
 
-            <!-- USER STATS -->
-            <div class="user-stats">
+            <!-- USER STATS (de volta!) -->
+            <div class="user-stats-card">
                 <div class="stats-header">
-                    <div class="stats-avatar">MS</div>
+                    <div class="stats-avatar" id="stats-avatar">MS</div>
                     <div class="stats-info">
-                        <div class="stats-name">Maria Silva</div>
-                        <div class="stats-rank"><i class="fas fa-trophy"></i> 5o lugar no ranking</div>
+                        <div class="stats-name" id="stats-name">Maria Silva</div>
+                        <div class="stats-rank"><i class="fas fa-trophy"></i> <span id="stats-ranking">5o lugar no ranking</span></div>
                     </div>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <div class="stat-value gold">2.450</div>
+                        <div class="stat-value gold" id="stats-coins">2.450</div>
                         <div class="stat-label">EconoCoins</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value purple">12</div>
+                        <div class="stat-value purple" id="stats-streak">12</div>
                         <div class="stat-label">Dias de Streak</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value blue">5</div>
+                        <div class="stat-value blue" id="stats-conquistas">5</div>
                         <div class="stat-label">Conquistas</div>
                     </div>
                 </div>
             </div>
 
-            <!-- LEVEL -->
-            <div class="level-badge"><i class="fas fa-star"></i> Nivel 5 - Colaborador Destaque</div>
+            <!-- LEVEL BADGE -->
+            <div class="level-badge"><i class="fas fa-star"></i> <span id="level-text">Nivel 5 - Colaborador Destaque</span></div>
 
             <!-- RANKING -->
-            <div class="ranking-card">
+            <div class="ranking-card" id="ranking">
                 <div class="ranking-header">
                     <div class="ranking-title"><i class="fas fa-trophy"></i> Ranking Top 10</div>
                     <div class="ranking-subtitle">Os colaboradores mais engajados da semana</div>
@@ -784,12 +325,12 @@
                     </div>
                     <div class="ranking-item current-user">
                         <div class="rank-number rank-other">5</div>
-                        <div class="rank-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
+                        <div class="rank-avatar" id="ranking-user-avatar" style="background: linear-gradient(135deg, var(--secondary), #10B981);">MS</div>
                         <div class="rank-info">
-                            <div class="rank-name">Maria Silva (Voce)</div>
-                            <div class="rank-role">Gerente . Loja Centro</div>
+                            <div class="rank-name" id="ranking-user-name">Maria Silva (Voce)</div>
+                            <div class="rank-role" id="ranking-user-role">Gerente . Loja Centro</div>
                         </div>
-                        <div class="rank-coins"><i class="fas fa-coins"></i> 2.450</div>
+                        <div class="rank-coins"><i class="fas fa-coins"></i> <span id="ranking-user-coins">2.450</span></div>
                         <span class="rank-trend trend-up"><i class="fas fa-arrow-up"></i> 3</span>
                     </div>
                     <div class="ranking-item">
@@ -846,42 +387,40 @@
             </div>
 
             <!-- RECENT ACTIVITY -->
-            <div style="background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px; margin-bottom: 24px;">
-                <div style="font-size: 16px; font-weight: 800; color: var(--dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-history" style="color: var(--primary);"></i> Historico de Ganhos
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 14px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #ECFDF5; display: flex; align-items: center; justify-content: center; color: var(--secondary); font-size: 14px;"><i class="fas fa-check"></i></div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 13px; font-weight: 600; color: var(--dark);">Missao: Curtir 5 posts</div>
-                            <div style="font-size: 12px; color: var(--gray);">Hoje, 14:32</div>
+            <div class="history-widget">
+                <div class="history-title"><i class="fas fa-history"></i> Historico de Ganhos</div>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="history-icon success"><i class="fas fa-check"></i></div>
+                        <div class="history-info">
+                            <div class="history-name">Missao: Curtir 5 posts</div>
+                            <div class="history-date">Hoje, 14:32</div>
                         </div>
-                        <span style="font-size: 14px; font-weight: 700; color: var(--gold);">+50</span>
+                        <span class="history-value">+50</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #F0FDFA; display: flex; align-items: center; justify-content: center; color: #0D9488; font-size: 14px;"><i class="fas fa-comment"></i></div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 13px; font-weight: 600; color: var(--dark);">Missao: Comentar em 3 posts</div>
-                            <div style="font-size: 12px; color: var(--gray);">Hoje, 13:15</div>
+                    <div class="history-item">
+                        <div class="history-icon comment"><i class="fas fa-comment"></i></div>
+                        <div class="history-info">
+                            <div class="history-name">Missao: Comentar em 3 posts</div>
+                            <div class="history-date">Hoje, 13:15</div>
                         </div>
-                        <span style="font-size: 14px; font-weight: 700; color: var(--gold);">+75</span>
+                        <span class="history-value">+75</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #EFF6FF; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 14px;"><i class="fas fa-clock"></i></div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 13px; font-weight: 600; color: var(--dark);">Missao: 30 min online</div>
-                            <div style="font-size: 12px; color: var(--gray);">Hoje, 12:00</div>
+                    <div class="history-item">
+                        <div class="history-icon time"><i class="fas fa-clock"></i></div>
+                        <div class="history-info">
+                            <div class="history-name">Missao: 30 min online</div>
+                            <div class="history-date">Hoje, 12:00</div>
                         </div>
-                        <span style="font-size: 14px; font-weight: 700; color: var(--gold);">+30</span>
+                        <span class="history-value">+30</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #FFF7ED; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 14px;"><i class="fas fa-fire"></i></div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 13px; font-weight: 600; color: var(--dark);">Bonus: Streak de 7 dias</div>
-                            <div style="font-size: 12px; color: var(--gray);">Ontem, 23:59</div>
+                    <div class="history-item">
+                        <div class="history-icon bonus"><i class="fas fa-fire"></i></div>
+                        <div class="history-info">
+                            <div class="history-name">Bonus: Streak de 7 dias</div>
+                            <div class="history-date">Ontem, 23:59</div>
                         </div>
-                        <span style="font-size: 14px; font-weight: 700; color: var(--gold);">+100</span>
+                        <span class="history-value">+100</span>
                     </div>
                 </div>
             </div>
@@ -889,28 +428,53 @@
         </aside>
     </div>
 
+    <script src="js/auth/auth.js"></script>
+    <script src="js/nav_side/sidebar.js"></script>
+    <script src="js/nav_side/navbar.js"></script>
     <script>
-        // Animate progress bars on load
+        function loadGamingProfile() {
+            if (!window.Auth) return;
+            const user = Auth.getUser();
+            const iniciais = Auth.getIniciais(user.nome);
+            const colors = Auth.getAvatarColor(user.nome);
+
+            // Hero
+            document.getElementById('hero-nivel').textContent = 'Nivel ' + user.nivel + ' - ' + user.nivelNome;
+            document.getElementById('hero-coins').textContent = Auth.formatCoins(user.coins);
+
+            // Streak
+            document.getElementById('streak-dias').textContent = user.streak;
+
+            // User Stats (right sidebar)
+            document.getElementById('stats-avatar').textContent = iniciais;
+            document.getElementById('stats-avatar').style.background = 'linear-gradient(135deg, ' + colors[0] + ', ' + colors[1] + ')';
+            document.getElementById('stats-name').textContent = user.nome;
+            document.getElementById('stats-ranking').textContent = user.ranking + 'o lugar no ranking';
+            document.getElementById('stats-coins').textContent = Auth.formatCoins(user.coins);
+            document.getElementById('stats-streak').textContent = user.streak;
+            document.getElementById('stats-conquistas').textContent = user.conquistas;
+
+            // Level badge
+            document.getElementById('level-text').textContent = 'Nivel ' + user.nivel + ' - ' + user.nivelNome;
+
+            // Ranking user
+            document.getElementById('ranking-user-name').textContent = user.nome + ' (Voce)';
+            document.getElementById('ranking-user-role').textContent = user.cargo + ' . ' + user.loja;
+            document.getElementById('ranking-user-coins').textContent = Auth.formatCoins(user.coins);
+
+            const avatar = document.getElementById('ranking-user-avatar');
+            if (avatar) {
+                avatar.textContent = iniciais;
+                avatar.style.background = 'linear-gradient(135deg, ' + colors[0] + ', ' + colors[1] + ')';
+            }
+        }
+
         window.addEventListener('load', () => {
+            loadGamingProfile();
             document.querySelectorAll('.progress-fill').forEach(bar => {
                 const width = bar.style.width;
                 bar.style.width = '0%';
                 setTimeout(() => { bar.style.width = width; }, 300);
-            });
-        });
-
-        // Like button toggle
-        document.querySelectorAll('.post-action').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.querySelector('.fa-thumbs-up')) {
-                    this.classList.toggle('liked');
-                    const icon = this.querySelector('i');
-                    if (this.classList.contains('liked')) {
-                        icon.classList.remove('far'); icon.classList.add('fas');
-                    } else {
-                        icon.classList.remove('fas'); icon.classList.add('far');
-                    }
-                }
             });
         });
     </script>

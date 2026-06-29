@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria - EconoWeb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/geral.css">
+    <link rel="stylesheet" href="css/modules/auditoria.css">
+
+</head>
+<body>
+    <!-- Navbar e Sidebar são injetados automaticamente pelos scripts -->
+
+    <div class="main-layout">
+        <!-- LEFT SIDEBAR: injetado pelo sidebar.js -->
+
+        <!-- CENTER CONTENT -->
+        <main class="center-feed">
+            <div class="auditoria-header">
+                <div class="auditoria-title">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <h1>Auditoria do Sistema</h1>
+                        <p>Monitoramento e logs de atividades administrativas</p>
+                    </div>
+                </div>
+                <div class="auditoria-badge">
+                    <i class="fas fa-lock"></i> Acesso Restrito
+                </div>
+            </div>
+
+            <!-- STATS CARDS -->
+            <div class="auditoria-stats">
+                <div class="auditoria-stat-card">
+                    <div class="auditoria-stat-icon" style="background: #EFF6FF; color: var(--primary);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="auditoria-stat-info">
+                        <div class="auditoria-stat-number" id="stat-total-usuarios">0</div>
+                        <div class="auditoria-stat-label">Total de Usuários</div>
+                    </div>
+                </div>
+                <div class="auditoria-stat-card">
+                    <div class="auditoria-stat-icon" style="background: #FEF2F2; color: var(--danger);">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="auditoria-stat-info">
+                        <div class="auditoria-stat-number" id="stat-admins">0</div>
+                        <div class="auditoria-stat-label">Administradores</div>
+                    </div>
+                </div>
+                <div class="auditoria-stat-card">
+                    <div class="auditoria-stat-icon" style="background: #ECFDF5; color: var(--secondary);">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="auditoria-stat-info">
+                        <div class="auditoria-stat-number" id="stat-operadores">0</div>
+                        <div class="auditoria-stat-label">Operadores</div>
+                    </div>
+                </div>
+                <div class="auditoria-stat-card">
+                    <div class="auditoria-stat-icon" style="background: #FFF7ED; color: var(--accent);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="auditoria-stat-info">
+                        <div class="auditoria-stat-number" id="stat-ultimo-acesso">--</div>
+                        <div class="auditoria-stat-label">Último Acesso</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABELA DE USUÁRIOS -->
+            <div class="auditoria-card">
+                <div class="auditoria-card-header">
+                    <div class="auditoria-card-title">
+                        <i class="fas fa-list"></i> Usuários do Sistema
+                    </div>
+                    <div class="auditoria-card-actions">
+                        <button class="auditoria-btn" id="btn-refresh" onclick="AuditoriaModule.refresh()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                </div>
+                <div class="auditoria-table-wrap">
+                    <table class="auditoria-table" id="usuarios-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Nome</th>
+                                <th>Cargo</th>
+                                <th>Setor</th>
+                                <th>Nível</th>
+                                <th>Criado em</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuarios-tbody">
+                            <!-- Carregado dinamicamente -->
+                            <tr>
+                                <td colspan="7" class="auditoria-loading">
+                                    <i class="fas fa-spinner fa-spin"></i> Carregando usuários...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LOGS DE ATIVIDADE -->
+            <div class="auditoria-card">
+                <div class="auditoria-card-header">
+                    <div class="auditoria-card-title">
+                        <i class="fas fa-history"></i> Logs de Atividade
+                    </div>
+                </div>
+                <div class="auditoria-logs" id="auditoria-logs">
+                    <div class="auditoria-log-item">
+                        <div class="auditoria-log-icon"><i class="fas fa-info-circle"></i></div>
+                        <div class="auditoria-log-content">
+                            <div class="auditoria-log-text">Sistema de auditoria inicializado</div>
+                            <div class="auditoria-log-time">Agora</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="right-sidebar">
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title"><i class="fas fa-user-shield"></i> Seu Perfil</div>
+                </div>
+                <div class="widget-body" style="padding: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div id="auditoria-admin-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #DC2626, #F87171); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white;">AD</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--dark); font-size: 14px;" id="auditoria-admin-nome">Administrador</div>
+                            <div style="font-size: 12px; color: var(--gray);" id="auditoria-admin-role">Nível 1 — Administrador</div>
+                        </div>
+                    </div>
+                    <div style="padding: 12px; background: #FEF2F2; border-radius: var(--radius-xs); border: 1px solid #FECACA;">
+                        <div style="font-size: 12px; color: #991B1B; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle"></i> Acesso Total
+                        </div>
+                        <div style="font-size: 12px; color: #B91C1C; margin-top: 4px;">Você tem permissão para visualizar e gerenciar todos os dados do sistema.</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/bd/supabase.js"></script>
+    <script src="js/auth/auth.js"></script>
+    <script src="js/modules/perm/permissao.js"></script>
+    <script src="js/nav_side/navbar.js"></script>
+    <script src="js/nav_side/sidebar.js"></script>
+    <script src="js/modules/auditoria/auditoria.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.AuditoriaModule) {
+                AuditoriaModule.init();
+            }
+        });
+    </script>
+</body>
+</html>

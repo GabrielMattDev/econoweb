@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos - Economart Connect</title>
+    <title>Eventos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS Geral (DEVE vir ANTES dos scripts que injetam componentes) -->
     <link rel="stylesheet" href="css/geral.css">
     <!-- CSS Específico da Tela de Eventos -->
-    <link rel="stylesheet" href="css/eventos.css">
+    <link rel="stylesheet" href="css/modules/eventos.css">
 
     <!-- ============================================================
          SUPABASE AUTH INTEGRATION
          ============================================================ -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script src="js/supabase.js"></script>
+    <script src="js/bd/supabase.js"></script>
     <script src="js/auth/auth.js"></script>
 
     <!-- ============================================================
@@ -559,7 +559,7 @@
     </script>
 
     <!-- Minhas Inscricoes - modulo exclusivo da tela eventos -->
-    <script src="js/modules/inscricoes_eventos.js"></script>
+    <script src="js/modules/eventos/inscricoes_eventos.js"></script>
 
     <!-- Sidebar Component (injeta a sidebar automaticamente) -->
     <script src="js/nav_side/sidebar.js"></script>
